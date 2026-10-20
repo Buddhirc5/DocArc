@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DocArc Vault Register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr) 310px;gap:16px;align-items:start}
+.sticky{position:sticky;top:78px}
+/* step navigation */
+.nav .sec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 6px}
+.nav .sec:first-child{margin-top:0}
+.nav button{display:flex;align-items:center;gap:9px;width:100%;border:0;background:none;font:inherit;color:var(--ink);text-align:left;padding:6px 8px;border-radius:8px;cursor:pointer}
+.nav button:hover{background:var(--field)}
+.nav button.on{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.nav button i{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.nav button.done i{background:var(--brand);border-color:var(--brand)}
+/* stage */
+.stage{min-height:520px;display:flex;flex-direction:column;padding:34px 38px}
+.progress{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin:-14px 0 26px}
+.progress div{height:100%;background:var(--brand);transition:width .25s}
+.eyebrow{color:var(--brand);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.07em}
+.q{font-size:26px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;line-height:1.25}
+.help{color:var(--muted);margin:0 0 24px;font-size:14px;max-width:640px}
+.body{flex:1;animation:rise .22s ease}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.bigin{font-size:28px;font-weight:600;padding:14px 18px;border-radius:14px;max-width:420px;font-variant-numeric:tabular-nums}
+.money{text-align:right;font-variant-numeric:tabular-nums}
+.foot{display:flex;align-items:center;gap:10px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.grid-rows{display:grid;grid-template-columns:200px 220px 40px;gap:8px 10px;align-items:center;max-width:520px}
+.grid-rows .h{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.counts{display:grid;grid-template-columns:110px 150px 1fr;gap:8px 14px;align-items:center;max-width:560px}
+.counts .d{font-weight:700;font-size:15px}
+.counts .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.counts .tot{border-top:1px solid var(--line);padding-top:10px;margin-top:4px;font-weight:700}
+.totline{display:flex;justify-content:space-between;max-width:520px;margin-top:14px;padding:12px 14px;background:var(--field);border:1px solid var(--line);border-radius:12px;font-weight:700}
+.result{border-radius:16px;padding:24px;display:flex;gap:18px;align-items:center;max-width:640px}
+.result.ok{background:var(--ok-soft);color:#14532D}
+.result.bad{background:var(--bad-soft);color:#7F1D1D}
+.result .big{font-size:26px;font-weight:800}
+.cmp{max-width:680px}
+.cmp td input{max-width:180px}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--ok-soft);color:#166534}.pill.bad{background:var(--bad-soft);color:#991B1B}.pill.na{background:var(--field);color:var(--muted);border:1px solid var(--line)}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:560px}
+.timein{display:flex;gap:6px}
+/* side panel */
+.pos .line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-variant-numeric:tabular-nums}
+.pos .line span{color:var(--muted)}
+.pos .line b{font-weight:600}
+.pos .cf{background:var(--brand);color:#fff;border-radius:12px;padding:14px;margin:12px 0}
+.pos .cf small{opacity:.85;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.pos .cf b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.review-grid .stat{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.review-grid .stat small{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase}
+.review-grid .stat b{display:block;font-size:19px;font-variant-numeric:tabular-nums}
+@media (max-width:1200px){.layout{grid-template-columns:1fr 300px}.navcol{display:none}}
+@media (max-width:860px){.layout{grid-template-columns:1fr}.sticky{position:static}.stage{padding:24px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="row" style="margin-bottom:16px">
+    <div><b style="font-size:18px">Vault Register</b> <span class="hint">Form CSV 078</span></div>
+    <span class="spacer"></span>
+    <span class="hint"><span class="kbd">Enter</span> next &nbsp; <span class="kbd">Shift</span>+<span class="kbd">Enter</span> back</span>
+    <button class="btn" id="historyBtn">Saved days</button>
+    <button class="btn" id="newDayBtn">Start a new day</button>
+  </div>
+  <div class="layout">
+    <aside class="card sticky navcol nav" id="nav"></aside>
+    <section class="card stage" id="stage"></section>
+    <aside class="sticky">
+      <div class="card pos" id="pos"></div>
+    </aside>
+  </div>
+</main>
+
+<div class="modal" id="histModal"><div class="card">
+  <h2>Saved days <span class="spacer"></span><button class="btn sm ghost" data-close>Close</button></h2>
+  <div class="tablewrap"><table><thead><tr><th>Date</th><th class="num">B/F</th><th class="num">C/F</th><th class="num">Branch total</th><th></th></tr></thead><tbody id="histBody"></tbody></table></div>
+</div></div>
+
+<script src="common.js"></script>
+<script>
+renderHeader('vault.html', 'Vault Register');
+const S = getSettings();
+const NOTES = [5000,1000,500,100,50,20,2000];
+const COINS = [20,10,5,2,1];
+const FX = ['EUR','GBP','USD','INR','AED','AUD','SGD'];
+const MACHINES = ['ATM','CDM','CRM'];
+
+const STEPS = [
+  {sec:'Opening', id:'date', type:'date', nav:'Date', q:'Which day is this register for?', help:'Pick the business date. Brought-forward figures come from the last day saved before it.'},
+  {sec:'Opening', id:'bf', type:'amount', nav:'Vault reserve B/F', q:'Vault reserve brought forward (B/F)', help:'Taken from the last saved day\'s C/F. Check it against the book and change it if needed.'},
+  {sec:'Additions', id:'hoIn', type:'amount', nav:'From Head Office', q:'Cash from Head Office / other banks', help:'Leave empty or press Nil if nothing came in today.'},
+  {sec:'Additions', id:'sv1In', type:'amount', nav:'From Sub Vault 1', q:'Cash from Sub Vault 1 (365 Banking)'},
+  {sec:'Additions', id:'sv2In', type:'amount', nav:'From Sub Vault 2', q:'Cash from Sub Vault 2 (365 Banking)'},
+  {sec:'Additions', id:'fromRows', type:'rows', nav:'From tellers / ATM', q:'Cash from tellers / ATM / CDM / CRM', help:'One line per teller or machine. Pick a chip or type a teller number.', who:'From'},
+  {sec:'Additions', id:'unsRecv', type:'amount', nav:'Unserviceable received', q:'Unserviceable currency received'},
+  {sec:'Deductions', id:'hoOut', type:'amount', nav:'To Head Office', q:'Cash to Head Office / other banks'},
+  {sec:'Deductions', id:'sv1Out', type:'amount', nav:'To Sub Vault 1', q:'Cash to Sub Vault 1 (365 Banking)'},
+  {sec:'Deductions', id:'sv2Out', type:'amount', nav:'To Sub Vault 2', q:'Cash to Sub Vault 2 (365 Banking)'},
+  {sec:'Deductions', id:'toRows', type:'rows', nav:'To tellers / ATM', q:'Cash to tellers / ATM / CDM / CRM', help:'One line per teller or machine.', who:'To'},
+  {sec:'Deductions', id:'unsDisp', type:'amount', nav:'Unserviceable dispatched', q:'Unserviceable currency dispatched'},
+  {sec:'Physical count', id:'serv', type:'counts', denoms:NOTES, nav:'Serviceable notes', q:'Count the serviceable notes', help:'Enter the number of notes. Values and totals are worked out for you.'},
+  {sec:'Physical count', id:'coins', type:'counts', denoms:COINS, small:true, nav:'Coins', q:'Count the coins', help:'Enter the number of coins. Put small coins in as an amount.'},
+  {sec:'Physical count', id:'unserv', type:'counts', denoms:NOTES, nav:'Unserviceable notes', q:'Count the unserviceable notes'},
+  {sec:'Check', id:'check', type:'check', nav:'Balance check', q:'Does the physical cash match the vault reserve?'},
+  {sec:'End of day', id:'tellers', type:'rows', nav:'Teller boxes', q:'Teller boxes at end of day', help:'Closing cash in each teller box.', who:'Teller No', tellerOnly:true},
+  {sec:'End of day', id:'fx', type:'fx', nav:'Foreign currency', q:'Vault cash: foreign currency', help:'B/F comes from the last saved day. Balance = B/F + Received - Sold.'},
+  {sec:'End of day', id:'sum', type:'summary', nav:'Branch cash summary', q:'Branch cash summary: local currency', help:'Vault and teller totals come from earlier steps. Add the sub vault, ATM and CRM/CDM amounts.'},
+  {sec:'End of day', id:'recon', type:'recon', nav:'System check', q:'Compare with the Branch Cash Position report', help:'Optional. Enter the LKR position from the system report (signs are ignored). Differences show straight away.'},
+  {sec:'Keys', id:'kOut', type:'keys', which:'out', nav:'Cash out', q:'Key / combination holding: cash out'},
+  {sec:'Keys', id:'kIn', type:'keys', which:'in', nav:'Cash in', q:'Key / combination holding: cash in'},
+  {sec:'Review', id:'review', type:'review', nav:'Review and download', q:'Review and download'}
+];
+
+/* ---------------- state ---------------- */
+function blank(){
+  return { date:'', bf:'', bfAuto:true, hoIn:'', sv1In:'', sv2In:'', fromRows:[], unsRecv:'', hoOut:'', sv1Out:'', sv2Out:'', toRows:[], unsDisp:'',
+    serv:{}, coins:{}, unserv:{}, tellers:[], fx:{}, sum:{sv:'', atm:'', crm:''}, recon:{}, kOut:{}, kIn:{} };
+}
+let days = store.get('vault.days', {});
+let v = store.get('vault.draft', null);
+let step = store.get('vault.step', 0);
+
+function prevDay(date){
+  return Object.values(days).filter(d => d.date < date).sort((a,b) => b.date.localeCompare(a.date))[0];
+}
+function carryForward(){
+  const p = prevDay(v.date || today());
+  if(v.bfAuto) v.bf = p ? String(p.cf) : v.bf;
+  FX.forEach(c => {
+    v.fx[c] = v.fx[c] || {};
+    if(v.fx[c].bfAuto !== false){ const b = p && p.fx && p.fx[c] ? fxBal(p.fx[c]) : 0; v.fx[c].bf = b ? String(b) : ''; v.fx[c].bfAuto = true; }
+  });
+}
+function newDay(date){
+  v = blank(); v.date = date; carryForward(); step = 0; save(); render();
+}
+if(!v){ const last = Object.values(days).sort((a,b) => b.date.localeCompare(a.date))[0]; v = blank(); v.date = today(); if(last && last.date === today()) v = JSON.parse(JSON.stringify(last)); carryForward(); }
+
+let saveT;
+function save(){ clearTimeout(saveT); saveT = setTimeout(() => { store.set('vault.draft', v); store.set('vault.step', step); }, 250); }
+
+/* ---------------- calculations ---------------- */
+const sumRows = rs => (rs || []).reduce((t,r) => t + num(r.amt), 0);
+const countTotal = (obj, denoms, small) => denoms.reduce((t,d) => t + num(obj[d]) * d, 0) + (small ? num(obj.small) : 0);
+const fxBal = f => num(f.bf) + num(f.rec) - num(f.sold);
+function calc(){
+  const fromSum = sumRows(v.fromRows), toSum = sumRows(v.toRows);
+  const add = num(v.hoIn) + num(v.sv1In) + num(v.sv2In) + fromSum + num(v.unsRecv);
+  const ded = num(v.hoOut) + num(v.sv1Out) + num(v.sv2Out) + toSum + num(v.unsDisp);
+  const cf = num(v.bf) + add - ded;
+  const serv = countTotal(v.serv, NOTES), coins = countTotal(v.coins, COINS, true), unserv = countTotal(v.unserv, NOTES);
+  const phys = serv + coins + unserv;
+  const tellers = sumRows(v.tellers);
+  const branch = phys + num(v.sum.sv) + tellers + num(v.sum.atm) + num(v.sum.crm);
+  return { fromSum, toSum, add, ded, cf, serv, coins, unserv, phys, diff: +(phys - cf).toFixed(2), tellers, branch };
+}
+
+/* ---------------- path helpers ---------------- */
+function getPath(p){ return p.split('.').reduce((o,k) => (o == null ? undefined : o[k]), v); }
+function setPath(p, val){
+  const ks = p.split('.'); let o = v;
+  ks.slice(0,-1).forEach(k => { if(o[k] == null) o[k] = {}; o = o[k]; });
+  o[ks[ks.length-1]] = val;
+}
+const moneyIn = (path, extra='') => `<input class="money ${extra}" inputmode="decimal" data-p="${path}" value="${esc(fmtIn(getPath(path)))}" placeholder="0.00" autocomplete="off">`;
+const fmtIn = x => (x === '' || x == null) ? '' : money(num(x));
+
+/* ---------------- rendering ---------------- */
+function stepDone(s){
+  const x = v[s.id];
+  switch(s.type){
+    case 'date': return !!v.date;
+    case 'amount': return x !== '' && x != null;
+    case 'rows': return (x || []).some(r => r.amt);
+    case 'counts': return Object.values(x || {}).some(Boolean);
+    case 'fx': return FX.some(c => v.fx[c] && (v.fx[c].rec || v.fx[c].sold || v.fx[c].bf));
+    case 'summary': return Object.values(v.sum).some(Boolean);
+    case 'recon': return Object.values(v.recon || {}).some(Boolean);
+    case 'keys': return Object.values(x || {}).some(Boolean);
+    default: return false;
+  }
+}
+function renderNav(){
+  let html = '', sec = '';
+  STEPS.forEach((s,i) => {
+    if(s.sec !== sec){ sec = s.sec; html += `<div class="sec">${sec}</div>`; }
+    html += `<button data-go="${i}" class="${i===step?'on':''} ${stepDone(s)?'done':''}"><i></i>${s.nav}</button>`;
+  });
+  $('nav').innerHTML = html;
+}
+function renderPos(){
+  const c = calc();
+  const diffPill = c.phys || c.cf ? (Math.abs(c.diff) < 0.005 ? '<span class="pill ok">Balanced</span>' : `<span class="pill bad">${c.diff > 0 ? '+' : ''}${money(c.diff)}</span>`) : '<span class="pill na">Not counted</span>';
+  $('pos').innerHTML = `<h2>Vault position <span class="spacer"></span><span class="hint">${fmtDate(v.date)}</span></h2>
+    <div class="line"><span>Reserve B/F</span><b>${money(num(v.bf))}</b></div>
+    <div class="line"><span>Additions</span><b>+ ${money(c.add)}</b></div>
+    <div class="line"><span>Deductions</span><b>- ${money(c.ded)}</b></div>
+    <div class="cf"><small>Vault reserve C/F</small><b>${money(c.cf)}</b></div>
+    <div class="line"><span>Physical count</span><b>${money(c.phys)}</b></div>
+    <div class="line"><span>Difference</span>${diffPill}</div>
+    <div class="line"><span>Teller boxes</span><b>${money(c.tellers)}</b></div>
+    <div class="line" style="border:0"><span>Total cash at branch</span><b>${money(c.branch)}</b></div>`;
+}
+
+function chipsFor(s){
+  const seen = new Set();
+  Object.values(days).concat([v]).forEach(d => ['fromRows','toRows','tellers'].forEach(k => (d[k] || []).forEach(r => r.who && seen.add(String(r.who).trim()))));
+  let list = [...seen].filter(x => !MACHINES.includes(x.toUpperCase())).sort();
+  if(!s.tellerOnly) list = list.concat(MACHINES);
+  return list;
+}
+
+function bodyHtml(s){
+  const c = calc();
+  switch(s.type){
+    case 'date':
+      return `<input type="date" class="bigin" data-p="date" value="${v.date}">
+        <p class="hint" style="margin-top:14px">${prevDay(v.date) ? 'Previous saved day: ' + fmtDate(prevDay(v.date).date) + ', C/F ' + money(prevDay(v.date).cf) : 'No earlier day is saved on this computer, so enter the B/F by hand.'}</p>`;
+    case 'amount':
+      return `<div class="row">${moneyIn(s.id, 'bigin')}<button class="btn" data-nil>Nil</button></div>`;
+    case 'rows': {
+      const rows = v[s.id] = v[s.id] && v[s.id].length ? v[s.id] : [{who:'', amt:''}];
+      return `<div class="chips">${chipsFor(s).map(x => `<span class="chip" data-chip="${esc(x)}">${esc(x)}</span>`).join('')}</div>
+        <div class="grid-rows"><div class="h">${s.who}</div><div class="h" style="text-align:right">Amount</div><div></div>
+        ${rows.map((r,i) => `<input data-p="${s.id}.${i}.who" value="${esc(r.who)}" placeholder="${s.tellerOnly ? 'e.g. 5550' : 'Teller no. or ATM'}" autocomplete="off">
+          ${moneyIn(`${s.id}.${i}.amt`)}
+          <button class="btn sm ghost" data-delrow="${i}" title="Remove"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`).join('')}
+        </div>
+        <div class="row" style="margin-top:10px"><button class="btn sm" data-addrow>Add line</button></div>
+        <div class="totline"><span>Total</span><span id="tot">${money(sumRows(rows))}</span></div>`;
+    }
+    case 'counts': {
+      const o = v[s.id] = v[s.id] || {};
+      return `<div class="counts"><div class="h hint">Denomination</div><div class="h hint">Pieces</div><div class="h hint" style="text-align:right">Value</div>
+        ${s.denoms.map(d => `<div class="d">x ${d.toLocaleString()}</div>
+          <input inputmode="numeric" data-p="${s.id}.${d}" value="${esc(o[d] || '')}" placeholder="0" autocomplete="off">
+          <div class="v" id="val-${d}">${moneyOrDash(num(o[d]) * d)}</div>`).join('')}
+        ${s.small ? `<div class="d">Small coins</div>${moneyIn(s.id + '.small')}<div class="v" id="val-small">${moneyOrDash(num(o.small))}</div>` : ''}
+        <div class="tot">Total</div><div class="tot"></div><div class="tot v" id="tot">${money(countTotal(o, s.denoms, s.small))}</div></div>`;
+    }
+    case 'check': {
+      const ok = Math.abs(c.diff) < 0.005;
+      return `<div class="result ${ok ? 'ok' : 'bad'}">
+          <svg class="icon" style="width:40px;height:40px" viewBox="0 0 24 24">${ok ? '<circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/>' : '<circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 17h.01"/>'}</svg>
+          <div><div class="big">${ok ? 'Balanced' : 'Difference of ' + money(c.diff)}</div>
+          <div>${ok ? 'The physical cash matches the vault reserve C/F.' : (c.diff > 0 ? 'The physical count is higher than the C/F.' : 'The physical count is lower than the C/F.') + ' Recheck the additions, deductions or note counts.'}</div></div></div>
+        <div class="review-grid" style="max-width:640px;margin-top:16px">
+          <div class="stat"><small>Vault reserve C/F</small><b>${money(c.cf)}</b></div>
+          <div class="stat"><small>Grand total (physical)</small><b>${money(c.phys)}</b></div>
+          <div class="stat"><small>Serviceable notes</small><b>${money(c.serv)}</b></div>
+          <div class="stat"><small>Coins + unserviceable</small><b>${money(c.coins + c.unserv)}</b></div>
+        </div>
+        ${ok ? '' : `<div class="row" style="margin-top:16px"><button class="btn sm" data-go="2">Recheck additions</button><button class="btn sm" data-go="7">Recheck deductions</button><button class="btn sm" data-go="12">Recount notes</button></div>`}`;
+    }
+    case 'fx':
+      return `<div class="tablewrap" style="max-width:760px"><table><thead><tr><th>Currency</th><th class="num">Balance B/F</th><th class="num">Received</th><th class="num">Sold</th><th class="num">Balance</th></tr></thead><tbody>
+        ${FX.map(cur => { const f = v.fx[cur] = v.fx[cur] || {}; return `<tr><td><b>${cur}</b></td>
+          <td>${moneyIn(`fx.${cur}.bf`)}</td><td>${moneyIn(`fx.${cur}.rec`)}</td><td>${moneyIn(`fx.${cur}.sold`)}</td>
+          <td class="num" id="bal-${cur}"><b>${moneyOrDash(fxBal(f))}</b></td></tr>`; }).join('')}
+        </tbody></table></div>`;
+    case 'summary':
+      return `<div class="tablewrap" style="max-width:640px"><table><tbody>
+        <tr><td>Total cash in vault <span class="hint">(physical count)</span></td><td class="num"><b>${money(c.phys)}</b></td></tr>
+        <tr><td>Cash in sub vaults (365 Banking)</td><td>${moneyIn('sum.sv')}</td></tr>
+        <tr><td>Total cash in teller boxes at EOD <span class="hint">(from teller boxes)</span></td><td class="num"><b>${money(c.tellers)}</b></td></tr>
+        <tr><td>Total cash in ATM at EOD</td><td>${moneyIn('sum.atm')}</td></tr>
+        <tr><td>Total cash in CRM/CDM at EOD</td><td>${moneyIn('sum.crm')}</td></tr>
+        <tr><td><b>Total cash at branch</b></td><td class="num" id="tot"><b style="color:var(--brand);font-size:17px">${money(c.branch)}</b></td></tr>
+        </tbody></table></div>`;
+    case 'recon':
+      return `<div class="tablewrap cmp"><table><thead><tr><th>Item</th><th class="num">Register</th><th>System (LKR position)</th><th>Result</th></tr></thead><tbody>
+        ${reconRows().map(r => `<tr><td>${esc(r.label)}</td><td class="num">${money(r.reg)}</td><td>${moneyIn('recon.' + r.key)}</td><td id="rc-${r.key}">${reconPill(r)}</td></tr>`).join('')}
+        </tbody></table></div><p class="hint" style="margin-top:12px">Leave a line empty to skip it. Teller lines come from the teller boxes step.</p>`;
+    case 'keys': {
+      const k = v[s.id] = v[s.id] || {};
+      const staff = `<datalist id="staffDl">${S.staff.map(n => `<option value="${esc(n)}">`).join('')}</datalist>`;
+      return `${staff}<div class="kgrid">
+        <div><label>Time opened</label><div class="timein"><input type="time" data-p="${s.id}.open" value="${k.open||''}"><button class="btn sm" data-now="${s.id}.open">Now</button></div></div>
+        <div><label>Time closed</label><div class="timein"><input type="time" data-p="${s.id}.close" value="${k.close||''}"><button class="btn sm" data-now="${s.id}.close">Now</button></div></div>
+        <div><label>Key / Door 1 holder</label><input list="staffDl" data-p="${s.id}.k1" value="${esc(k.k1||'')}"></div>
+        <div><label>Key / Door 2 holder</label><input list="staffDl" data-p="${s.id}.k2" value="${esc(k.k2||'')}"></div>
+        <div style="grid-column:1/-1"><label>Combination holder</label><input list="staffDl" data-p="${s.id}.comb" value="${esc(k.comb||'')}"></div>
+      </div>${s.which === 'in' ? `<div class="row" style="margin-top:12px"><button class="btn sm" data-copykeys>Same holders as cash out</button></div>` : ''}
+      <p class="hint" style="margin-top:12px">Holders sign beside their names on the PDF through the e-sign portal.</p>`;
+    }
+    case 'review': {
+      const ok = Math.abs(c.diff) < 0.005;
+      return `<div class="review-grid" style="max-width:720px">
+          <div class="stat"><small>Date</small><b>${fmtDate(v.date)}</b></div>
+          <div class="stat"><small>Balance check</small><b style="color:${ok ? 'var(--ok)' : 'var(--bad)'}">${ok ? 'Balanced' : 'Difference ' + money(c.diff)}</b></div>
+          <div class="stat"><small>Vault reserve B/F</small><b>${money(num(v.bf))}</b></div>
+          <div class="stat"><small>Vault reserve C/F</small><b>${money(c.cf)}</b></div>
+          <div class="stat"><small>Total additions</small><b>${money(c.add)}</b></div>
+          <div class="stat"><small>Total deductions</small><b>${money(c.ded)}</b></div>
+          <div class="stat"><small>Teller boxes</small><b>${money(c.tellers)}</b></div>
+          <div class="stat"><small>Total cash at branch</small><b>${money(c.branch)}</b></div>
+        </div>
+        <div class="row" style="margin-top:22px">
+          <button class="btn pri" data-pdf>Download PDF</button>
+          <button class="btn" data-saveday>Save day</button>
+          <button class="btn" data-nextday>Save and start the next day</button>
+        </div>
+        <p class="hint" style="margin-top:12px">Sign the PDF in the e-sign portal and keep it with the branch records. Saving the day lets tomorrow's B/F fill in automatically.</p>`;
+    }
+  }
+}
+function reconRows(){
+  const c = calc();
+  const rows = [{key:'vault', label:'Vault (Sub Vault 1 position)', reg:c.cf}];
+  (v.tellers || []).filter(t => t.who).forEach(t => rows.push({key:'t_' + String(t.who).replace(/\W/g,''), label:'Teller ' + t.who, reg:num(t.amt)}));
+  rows.push({key:'atm', label:'ATM', reg:num(v.sum.atm)});
+  rows.push({key:'crm', label:'CRM / CDM (recycling + deposit ATM)', reg:num(v.sum.crm)});
+  return rows;
+}
+function reconPill(r){
+  const sys = (v.recon || {})[r.key];
+  if(sys === '' || sys == null) return '<span class="pill na">Not entered</span>';
+  const d = +(r.reg - Math.abs(num(sys))).toFixed(2);
+  return Math.abs(d) < 0.005 ? '<span class="pill ok">Matches</span>' : `<span class="pill bad">Diff ${money(d)}</span>`;
+}
+
+function renderStage(focus = true){
+  const s = STEPS[step];
+  $('stage').innerHTML = `<div class="progress"><div style="width:${(step / (STEPS.length - 1)) * 100}%"></div></div>
+    <div class="eyebrow">${s.sec} · Step ${step + 1} of ${STEPS.length}</div>
+    <div class="q">${s.q}</div>${s.help ? `<p class="help">${s.help}</p>` : '<div style="height:18px"></div>'}
+    <div class="body">${bodyHtml(s)}</div>
+    <div class="foot">
+      <button class="btn" data-back ${step === 0 ? 'disabled' : ''}>Back</button>
+      <span class="spacer"></span>
+      ${step < STEPS.length - 1 ? `<span class="hint">Press <span class="kbd">Enter</span></span><button class="btn pri" data-next>Next</button>` : ''}
+    </div>`;
+  if(focus){ const f = $('stage').querySelector('.body input:not([type=date]), .body input'); if(f) f.focus(); }
+}
+function render(focus){ renderNav(); renderStage(focus); renderPos(); }
+function go(i){ step = Math.max(0, Math.min(STEPS.length - 1, i)); save(); render(); window.scrollTo({top:0, behavior:'smooth'}); }
+
+/* live refresh of computed bits on the current step without re-rendering inputs */
+function refresh(){
+  const s = STEPS[step], c = calc();
+  if(s.type === 'rows') $('tot').textContent = money(sumRows(v[s.id]));
+  if(s.type === 'counts'){ const o = v[s.id]; s.denoms.forEach(d => $('val-' + d).textContent = moneyOrDash(num(o[d]) * d)); if(s.small) $('val-small').textContent = moneyOrDash(num(o.small)); $('tot').textContent = money(countTotal(o, s.denoms, s.small)); }
+  if(s.type === 'fx') FX.forEach(cur => $('bal-' + cur).innerHTML = `<b>${moneyOrDash(fxBal(v.fx[cur]))}</b>`);
+  if(s.type === 'summary') $('tot').innerHTML = `<b style="color:var(--brand);font-size:17px">${money(c.branch)}</b>`;
+  if(s.type === 'recon') reconRows().forEach(r => { const el = $('rc-' + r.key); if(el) el.innerHTML = reconPill(r); });
+  renderPos(); renderNav(); save();
+}
+
+/* ---------------- events ---------------- */
+$('nav').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if(b) go(+b.dataset.go); });
+const stage = $('stage');
+stage.addEventListener('input', e => {
+  const p = e.target.dataset.p; if(!p) return;
+  setPath(p, e.target.value);
+  if(p === 'bf') v.bfAuto = false;
+  if(/^fx\.\w+\.bf$/.test(p)) v.fx[p.split('.')[1]].bfAuto = false;
+  if(p === 'date'){ carryForward(); renderPos(); renderNav(); save(); return; }
+  refresh();
+});
+stage.addEventListener('focusout', e => { if(e.target.classList.contains('money') && e.target.value) e.target.value = money(num(e.target.value)); });
+stage.addEventListener('focusin', e => { if(e.target.classList.contains('money') && e.target.value) { e.target.value = String(num(e.target.value)); e.target.select(); } });
+stage.addEventListener('click', e => {
+  const t = e.target.closest('button, .chip'); if(!t) return;
+  const s = STEPS[step];
+  if(t.matches('[data-next]')) go(step + 1);
+  else if(t.matches('[data-back]')) go(step - 1);
+  else if(t.matches('[data-go]')) go(+t.dataset.go);
+  else if(t.matches('[data-nil]')){ v[s.id] = ''; go(step + 1); }
+  else if(t.matches('[data-addrow]')){ v[s.id].push({who:'', amt:''}); renderStage(false); focusLastRow('who'); }
+  else if(t.matches('[data-delrow]')){ v[s.id].splice(+t.dataset.delrow, 1); renderStage(false); refresh(); }
+  else if(t.matches('[data-chip]')){
+    const rows = v[s.id]; let i = rows.findIndex(r => !r.who);
+    if(i < 0){ rows.push({who:'', amt:''}); i = rows.length - 1; }
+    rows[i].who = t.dataset.chip; renderStage(false);
+    stage.querySelector(`[data-p="${s.id}.${i}.amt"]`).focus(); save();
+  }
+  else if(t.matches('[data-now]')){ setPath(t.dataset.now, nowTime()); renderStage(false); refresh(); }
+  else if(t.matches('[data-copykeys]')){ v.kIn = Object.assign({}, v.kIn, {k1:v.kOut.k1, k2:v.kOut.k2, comb:v.kOut.comb}); renderStage(false); refresh(); }
+  else if(t.matches('[data-pdf]')){ saveDay(true); makePdf(); }
+  else if(t.matches('[data-saveday]')) saveDay();
+  else if(t.matches('[data-nextday]')){ saveDay(true); const d = new Date(v.date); d.setDate(d.getDate() + 1); newDay(d.toISOString().slice(0,10)); toast('Day saved. Next day started.'); }
+});
+function focusLastRow(field){ const s = STEPS[step]; stage.querySelector(`[data-p="${s.id}.${v[s.id].length - 1}.${field}"]`)?.focus(); }
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter' || $('histModal').classList.contains('on')) return;
+  if(!stage.contains(e.target) && e.target !== document.body) return;
+  if(e.target.tagName === 'BUTTON') return;
+  const s = STEPS[step], p = e.target.dataset.p || '';
+  e.preventDefault();
+  if(e.target.classList.contains('money') && e.target.value) e.target.value = money(num(e.target.value));
+  if(e.shiftKey) return go(step - 1);
+  if(s.type === 'rows'){
+    const m = p.match(/\.(\d+)\.(who|amt)$/);
+    if(m && m[2] === 'who'){ stage.querySelector(`[data-p="${s.id}.${m[1]}.amt"]`).focus(); return; }
+    if(m && +m[1] === v[s.id].length - 1 && v[s.id][m[1]].amt){ v[s.id].push({who:'', amt:''}); renderStage(false); focusLastRow('who'); return; }
+    if(m && +m[1] < v[s.id].length - 1){ stage.querySelector(`[data-p="${s.id}.${+m[1] + 1}.who"]`).focus(); return; }
+  }
+  if(['counts','fx','summary','recon','keys'].includes(s.type)){
+    const ins = [...stage.querySelectorAll('.body input')]; const i = ins.indexOf(e.target);
+    if(i > -1 && i < ins.length - 1){ ins[i + 1].focus(); return; }
+  }
+  if(step < STEPS.length - 1) go(step + 1);
+});
+
+/* ---------------- days ---------------- */
+function saveDay(silent){
+  if(!v.date) return toast('Pick a date first');
+  v.tellers = (v.tellers || []).filter(r => r.who || r.amt);
+  days[v.date] = Object.assign(JSON.parse(JSON.stringify(v)), {cf: calc().cf, branchTotal: calc().branch});
+  store.set('vault.days', days); save(); renderNav();
+  if(!silent) toast('Day saved');
+}
+$('newDayBtn').onclick = () => {
+  const last = Object.values(days).sort((a,b) => b.date.localeCompare(a.date))[0];
+  let d = today();
+  if(last && last.date >= d){ const n = new Date(last.date); n.setDate(n.getDate() + 1); d = n.toISOString().slice(0,10); }
+  if(confirm(`Start a new register for ${fmtDate(d)}? The current form will be cleared. Save it first if you need it.`)) newDay(d);
+};
+function renderHist(){
+  const list = Object.values(days).sort((a,b) => b.date.localeCompare(a.date));
+  $('histBody').innerHTML = list.length ? list.map(d => `<tr><td><b>${fmtDate(d.date)}</b></td><td class="num">${money(num(d.bf))}</td><td class="num">${money(d.cf)}</td><td class="num">${money(d.branchTotal || 0)}</td>
+    <td style="white-space:nowrap;text-align:right"><button class="btn sm" data-open="${d.date}">Open</button> <button class="btn sm" data-hpdf="${d.date}">PDF</button> <button class="btn sm ghost" data-hdel="${d.date}">Delete</button></td></tr>`).join('')
+    : '<tr><td colspan="5" class="hint" style="text-align:center;padding:18px">No saved days yet</td></tr>';
+}
+$('historyBtn').onclick = () => { renderHist(); $('histModal').classList.add('on'); };
+$('histModal').addEventListener('click', e => {
+  const t = e.target;
+  if(t === e.currentTarget || t.matches('[data-close]')) return $('histModal').classList.remove('on');
+  if(t.dataset.open){ v = JSON.parse(JSON.stringify(days[t.dataset.open])); step = STEPS.length - 1; save(); render(); $('histModal').classList.remove('on'); }
+  if(t.dataset.hpdf){ const keep = v; v = JSON.parse(JSON.stringify(days[t.dataset.hpdf])); makePdf(); v = keep; }
+  if(t.dataset.hdel && confirm('Delete the saved register for ' + fmtDate(t.dataset.hdel) + '?')){ delete days[t.dataset.hdel]; store.set('vault.days', days); renderHist(); }
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') $('histModal').classList.remove('on'); });
+
+/* ---------------- PDF (CSV 078 layout) ---------------- */
+function makePdf(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm', format:'a4'});
+  const c = calc(), W = 210, grey = [110,110,115];
+  pdfHeader(doc, {main:'VAULT REGISTER', sub:'Form No: CSV 078 · ' + S.branch + ' branch'}, 'Date: ' + fmtDate(v.date));
+  const dash = n => n ? money(n) : '-';
+
+  // Left column: movement statement
+  let y = 30; const L = 10, R = 104;
+  const line = (label, val, opt = {}) => {
+    doc.setFont('helvetica', opt.bold ? 'bold' : 'normal'); doc.setFontSize(opt.size || 8.2); doc.setTextColor(30);
+    doc.text(label, L + (opt.indent || 0), y);
+    if(val !== undefined){ doc.text(String(val), opt.mid ? 80 : R, y, {align:'right'}); if(!opt.mid){ doc.setDrawColor(225); doc.line(R - 34, y + 1, R, y + 1); } }
+    y += opt.gap || 5;
+  };
+  line('VAULT RESERVE B/F', money(num(v.bf)), {bold:true, size:9.5, gap:6});
+  line('Add:', undefined, {bold:true, gap:4.5});
+  line('Cash from Head Office / Other Banks', dash(num(v.hoIn)), {indent:2});
+  line('Cash from Sub Vault 1 (365 Banking)', dash(num(v.sv1In)), {indent:2});
+  line('Cash from Sub Vault 2 (365 Banking)', dash(num(v.sv2In)), {indent:2});
+  line('Cash from Tellers/ATM/CDM/CRM', undefined, {indent:2, gap:4.5});
+  (v.fromRows || []).filter(r => r.who || r.amt).forEach(r => line('From ' + (r.who || ''), money(num(r.amt)), {indent:6, mid:true, gap:4.2}));
+  line('', dash(c.fromSum), {gap:5});
+  line('Unserviceable Currency Received', dash(num(v.unsRecv)), {indent:2});
+  line('Total Additions', money(c.add), {bold:true, gap:6.5});
+  line('Less:', undefined, {bold:true, gap:4.5});
+  line('Cash to Head Office / Other Banks', dash(num(v.hoOut)), {indent:2});
+  line('Cash to Sub Vault 1 (365 Banking)', dash(num(v.sv1Out)), {indent:2});
+  line('Cash to Sub Vault 2 (365 Banking)', dash(num(v.sv2Out)), {indent:2});
+  line('Cash to Tellers/ATM/CDM/CRM', undefined, {indent:2, gap:4.5});
+  (v.toRows || []).filter(r => r.who || r.amt).forEach(r => line('To ' + (r.who || ''), money(num(r.amt)), {indent:6, mid:true, gap:4.2}));
+  line('', dash(c.toSum), {gap:5});
+  line('Unserviceable Currency Dispatched', dash(num(v.unsDisp)), {indent:2});
+  line('Total Deductions', money(c.ded), {bold:true, gap:7});
+  doc.setFillColor(253,236,236); doc.roundedRect(L - 2, y - 5, R - L + 4, 8, 1.5, 1.5, 'F');
+  line('VAULT RESERVE C/F', money(c.cf), {bold:true, size:10, gap:6});
+  const leftEnd = y;
+
+  // Right column: physical cash balance
+  const cnt = (o, d) => num(o[d]) ? [num(o[d]).toLocaleString(), 'x ' + d.toLocaleString(), money(num(o[d]) * d)] : ['', 'x ' + d.toLocaleString(), ''];
+  const sec = t => [{content:t, colSpan:3, styles:{fillColor:[245,245,247], fontStyle:'bold', halign:'center', textColor:grey}}];
+  const tot = (t, n, bold) => [{content:t, colSpan:2, styles:{fontStyle:'bold', halign:'right'}}, {content:money(n), styles:{fontStyle:'bold', ...(bold ? {fillColor:[253,236,236], textColor:[200,20,27]} : {})}}];
+  const body = [sec('Serviceable Currency Notes'), ...NOTES.map(d => cnt(v.serv, d)), tot('Total', c.serv),
+    sec('Coins'), ...COINS.map(d => cnt(v.coins, d)), ['', 'Small coins', num(v.coins.small) ? money(num(v.coins.small)) : ''], tot('Total', c.coins),
+    sec('Unserviceable Currency Notes'), ...NOTES.map(d => cnt(v.unserv, d)), tot('Total', c.unserv), tot('Grand Total', c.phys, true)];
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.text('Physical Cash Balance', 112, 30);
+  doc.autoTable({ startY:32, margin:{left:112, right:10}, body, theme:'grid',
+    head:[['Pieces','Denomination','Value']],
+    styles:{fontSize:7.4, cellPadding:.55, lineColor:[215,215,220], lineWidth:.2, textColor:30},
+    headStyles:{fillColor:[237,28,36], textColor:255, fontSize:7.6},
+    columnStyles:{0:{halign:'right', cellWidth:20}, 1:{halign:'center', cellWidth:26}, 2:{halign:'right'}} });
+  y = Math.max(leftEnd, doc.lastAutoTable.finalY) + 6;
+
+  // Balance stamp
+  const ok = Math.abs(c.diff) < 0.005;
+  doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(...(ok ? [22,101,52] : [185,28,28]));
+  doc.text(ok ? 'Physical cash agrees with Vault Reserve C/F' : 'Difference between physical cash and C/F: ' + money(c.diff), 10, y - 1.5);
+  doc.setTextColor(30); y += 2;
+
+  // Teller boxes + FX side by side
+  const tellers = (v.tellers || []).filter(t => t.who || t.amt);
+  const tStart = y;
+  doc.autoTable({ startY:tStart, margin:{left:10, right:112}, theme:'grid',
+    head:[[{content:'Teller Boxes Summary (end of day)', colSpan:3, styles:{halign:'center'}}], ['Teller No','Amount','Teller\'s Signature']],
+    body:[...(tellers.length ? tellers : [{}, {}, {}]).map(t => [t.who || '', t.amt ? money(num(t.amt)) : '', '']), [{content:'TOTAL', styles:{fontStyle:'bold'}}, {content:money(c.tellers), styles:{fontStyle:'bold', halign:'right'}}, '']],
+    styles:{fontSize:7.4, cellPadding:.8, lineColor:[215,215,220], lineWidth:.2, textColor:30, minCellHeight:4.8},
+    headStyles:{fillColor:[245,245,247], textColor:grey}, columnStyles:{1:{halign:'right'}} });
+  const tEnd = doc.lastAutoTable.finalY;
+  const fxRow = (label, key) => [label, ...FX.map(cur => { const f = v.fx[cur] || {}; const n = key === 'bal' ? fxBal(f) : num(f[key]); return n ? money(n) : ''; })];
+  doc.autoTable({ startY:tStart, margin:{left:104, right:10}, theme:'grid',
+    head:[[{content:'Vault Cash Summary - Foreign Currency', colSpan:FX.length + 1, styles:{halign:'center'}}], ['Currency', ...FX]],
+    body:[fxRow('Balance B/F','bf'), fxRow('Received','rec'), fxRow('Sold','sold'), fxRow('Balance','bal').map((x,i) => ({content:x, styles:{fontStyle:'bold'}}))],
+    styles:{fontSize:6.8, cellPadding:.9, lineColor:[215,215,220], lineWidth:.2, textColor:30, halign:'right'},
+    headStyles:{fillColor:[245,245,247], textColor:grey, halign:'center'}, columnStyles:{0:{halign:'left', cellWidth:17}} });
+  y = Math.max(tEnd, doc.lastAutoTable.finalY) + 5;
+
+  // Branch cash summary
+  doc.autoTable({ startY:y, margin:{left:10, right:10}, theme:'grid',
+    head:[[{content:'Branch Cash Summary - Local Currency', colSpan:2, styles:{halign:'center'}}]],
+    body:[['Total Cash in Vault', money(c.phys)], ['Additions:  Cash in Sub Vaults (365 Banking)', dash(num(v.sum.sv))],
+      ['          Total cash in Teller Boxes at EOD', dash(c.tellers)], ['          Total cash in ATM at EOD', dash(num(v.sum.atm))],
+      ['          Total cash in CRM/CDM at EOD', dash(num(v.sum.crm))], [{content:'Total Cash at Branch', styles:{fontStyle:'bold'}}, {content:money(c.branch), styles:{fontStyle:'bold', textColor:[200,20,27]}}]],
+    styles:{fontSize:7.6, cellPadding:.7, lineColor:[215,215,220], lineWidth:.2, textColor:30},
+    headStyles:{fillColor:[245,245,247], textColor:grey}, columnStyles:{1:{halign:'right', cellWidth:60}} });
+  y = doc.lastAutoTable.finalY + 5;
+  if(y > 240){ doc.addPage(); y = 16; }
+
+  // Key / combination
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.text('Key / Combination Holding & Authorization', W / 2, y, {align:'center'}); y += 2;
+  const kbox = (x, title, k) => {
+    doc.setDrawColor(215); doc.roundedRect(x, y, 93, 36, 1.5, 1.5);
+    doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.text(title, x + 3, y + 5);
+    doc.setFont('helvetica','normal');
+    doc.text('Time opened: ' + (fmtTime(k.open) || '..........'), x + 3, y + 10); doc.text('Time closed: ' + (fmtTime(k.close) || '..........'), x + 50, y + 10);
+    [['Key / Door 1', k.k1], ['Key / Door 2', k.k2], ['Combination', k.comb]].forEach(([l, n], i) => {
+      const yy = y + 17 + i * 6.5;
+      doc.setTextColor(...grey); doc.text(l, x + 3, yy); doc.setTextColor(30); doc.text(n || '', x + 24, yy);
+      doc.setDrawColor(200); doc.line(x + 60, yy + .8, x + 90, yy + .8);
+    });
+    doc.setFontSize(6.5); doc.setTextColor(...grey); doc.text('Signature', x + 60, y + 34.5); doc.setTextColor(30);
+  };
+  kbox(10, 'Cash Out', v.kOut || {}); kbox(107, 'Cash In', v.kIn || {});
+  y += 42;
+
+  // Reconciliation (if entered)
+  const rr = reconRows().filter(r => (v.recon || {})[r.key] !== undefined && v.recon[r.key] !== '');
+  if(rr.length){
+    if(y > 250){ doc.addPage(); y = 16; }
+    doc.autoTable({ startY:y, margin:{left:10, right:10}, theme:'grid',
+      head:[[{content:'Reconciliation with Branch Cash Position (system)', colSpan:4, styles:{halign:'center'}}], ['Item','Register','System','Difference']],
+      body:rr.map(r => { const d = r.reg - Math.abs(num(v.recon[r.key])); return [r.label, money(r.reg), money(Math.abs(num(v.recon[r.key]))), Math.abs(d) < .005 ? 'Matches' : money(d)]; }),
+      styles:{fontSize:7.5, cellPadding:1, lineColor:[215,215,220], lineWidth:.2, textColor:30},
+      headStyles:{fillColor:[245,245,247], textColor:grey}, columnStyles:{1:{halign:'right'}, 2:{halign:'right'}, 3:{halign:'right'}} });
+    y = doc.lastAutoTable.finalY + 6;
+  }
+
+  // Authorisation signatures
+  if(y > 276){ doc.addPage(); y = 20; }
+  y = Math.max(y + 6, 280);
+  ['Prepared by','Checked by','Authorised by'].forEach((l, i) => {
+    const x = 10 + i * 66;
+    doc.setDrawColor(200); doc.line(x, y, x + 58, y);
+    doc.setFontSize(7.5); doc.setTextColor(...grey); doc.text(l, x, y + 4);
+  });
+  const pages = doc.internal.getNumberOfPages();
+  for(let i = 1; i <= pages; i++){ doc.setPage(i); doc.setFontSize(7); doc.setTextColor(...grey); doc.text(`Generated with DocArc · ${S.branch} · Page ${i} of ${pages}`, W / 2, 292, {align:'center'}); }
+  doc.save(`VaultRegister_${S.branch.replace(/\W+/g,'')}_${v.date}.pdf`);
+}
+
+render();
+</script>
+</body>
+</html>

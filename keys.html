@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DocArc Key Register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+.side{position:sticky;top:78px}
+.form{display:grid;grid-template-columns:160px 200px minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+.form .wide{grid-column:span 3}
+.timein{display:flex;gap:6px}
+.holder{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line)}
+.holder:last-child{border-bottom:0}
+.holder .ic{width:36px;height:36px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:none}
+.holder b{display:block}.holder small{color:var(--muted)}
+.holder .who{margin-left:auto;text-align:right}
+.holder .who b{color:var(--brand)}
+.empty{color:var(--muted);text-align:center;padding:18px}
+.setup td input{min-width:110px}
+.reasons{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+@media (max-width:1250px){.form{grid-template-columns:1fr 1fr 1fr}.form .wide{grid-column:span 3}}
+@media (max-width:1000px){.layout{grid-template-columns:1fr}.side{position:static}}
+</style>
+</head>
+<body>
+<main>
+  <div class="row" style="margin-bottom:16px">
+    <div><b style="font-size:18px">Key Register</b> <span class="hint">Key handover log</span></div>
+    <span class="spacer"></span>
+    <button class="btn" id="setupBtn">Keys and staff</button>
+  </div>
+  <div class="layout">
+    <div>
+      <div class="card">
+        <h2 id="formTitle">New handover</h2>
+        <div class="form" id="form">
+          <div><label>Date</label><input type="date" id="e_date"></div>
+          <div><label>Time</label><div class="timein"><input type="time" id="e_time"><button class="btn sm" id="nowBtn">Now</button></div></div>
+          <div><label>Description of key</label><select id="e_key"></select></div>
+          <div><label>Officer handing over</label><input id="e_from" list="staffDl"></div>
+          <div><label>Officer taking over</label><input id="e_to" list="staffDl"></div>
+          <div class="wide"><label>Reason</label><input id="e_reason" placeholder="Pick a reason below or type one">
+            <div class="reasons" id="reasons"></div></div>
+          <div><label>Authorised by</label><input id="e_auth" list="staffDl"></div>
+          <div><label>Remarks</label><input id="e_remarks"></div>
+        </div>
+        <datalist id="staffDl"></datalist>
+        <div class="row" style="margin-top:14px">
+          <span class="hint"><span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> to save</span>
+          <span class="spacer"></span>
+          <button class="btn ghost" id="cancelEdit" hidden>Cancel edit</button>
+          <button class="btn pri" id="saveEntry">Save entry</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Register <span class="spacer"></span><span class="hint" id="countInfo"></span></h2>
+        <div class="row" style="margin-bottom:12px">
+          <div><label>From</label><input type="date" id="f_from"></div>
+          <div><label>To</label><input type="date" id="f_to"></div>
+          <div style="min-width:200px"><label>Key</label><select id="f_key"></select></div>
+          <div class="row" style="align-self:flex-end">
+            <span class="chip" data-range="month">This month</span>
+            <span class="chip" data-range="last">Last month</span>
+            <span class="chip" data-range="all">All</span>
+          </div>
+          <span class="spacer"></span>
+          <button class="btn pri" id="pdfBtn" style="align-self:flex-end">Download register PDF</button>
+        </div>
+        <div class="tablewrap"><table id="reg"><thead><tr><th>Date</th><th>Time</th><th>Key</th><th>Handing over</th><th>Reason</th><th>Taking over</th><th>Authorised</th><th>Remarks</th><th></th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="card">
+        <h2>Who holds each key now</h2>
+        <div id="board"></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="modal" id="setupModal"><div class="card" style="width:min(980px,100%)">
+  <h2>Keys and staff <span class="spacer"></span><button class="btn sm ghost" data-close>Close</button></h2>
+  <p class="hint" style="margin-top:-6px">Set up each key once. The header fields from the register book go here.</p>
+  <div class="tablewrap setup"><table id="keyTbl"><thead><tr><th>Description of key</th><th>Model</th><th>Number</th><th>Duplicate lodged at</th><th>Date of lodgement</th><th>Current holder</th><th></th></tr></thead><tbody></tbody></table></div>
+  <div class="row" style="margin:10px 0 18px"><button class="btn sm" id="addKey">Add key</button></div>
+  <label>Staff names (one per line, shared with the other tools)</label>
+  <textarea id="staffTa" rows="5"></textarea>
+  <div class="row" style="margin-top:14px"><span class="spacer"></span><button class="btn pri" id="saveSetup">Save</button></div>
+</div></div>
+
+<script src="common.js"></script>
+<script>
+renderHeader('keys.html', 'Key Register');
+let S = getSettings();
+const REASONS = ['Leave', 'Hand over key', 'Duplicate key lodgement', 'Work from home', 'Duplicate key set', 'Key taken back'];
+const X = '<svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const KEYICON = '<svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3M14 9l2 2"/></svg>';
+
+let keys = store.get('keys.list', []);
+let entries = store.get('keys.entries', []);
+let editing = null;
+const uid = () => Math.random().toString(36).slice(2, 10);
+const keyName = id => (keys.find(k => k.id === id) || {}).desc || '(removed key)';
+const sortEntries = list => list.slice().sort((a,b) => (a.date + a.time).localeCompare(b.date + b.time));
+function holderOf(id){
+  const last = sortEntries(entries.filter(e => e.keyId === id)).pop();
+  return last ? {name:last.to, since:last.date, time:last.time} : {name:(keys.find(k => k.id === id) || {}).holder || '', since:''};
+}
+function persist(){ store.set('keys.list', keys); store.set('keys.entries', entries); }
+
+/* ---------- form ---------- */
+function fillKeySelects(){
+  const opts = keys.map(k => `<option value="${k.id}">${esc(k.desc)}${k.number ? ' · ' + esc(k.number) : ''}</option>`).join('');
+  const cur = $('e_key').value;
+  $('e_key').innerHTML = keys.length ? opts : '<option value="">Add keys in "Keys and staff" first</option>';
+  if(cur) $('e_key').value = cur;
+  const fk = $('f_key').value;
+  $('f_key').innerHTML = '<option value="">All keys</option>' + opts; $('f_key').value = fk;
+  $('staffDl').innerHTML = S.staff.map(n => `<option value="${esc(n)}">`).join('');
+}
+function resetForm(){
+  editing = null; $('formTitle').textContent = 'New handover'; $('cancelEdit').hidden = true; $('saveEntry').textContent = 'Save entry';
+  $('e_date').value = today(); $('e_time').value = nowTime();
+  ['e_reason','e_to','e_remarks'].forEach(id => $(id).value = '');
+  autoFrom(); renderReasons();
+}
+function autoFrom(){ if(!editing) $('e_from').value = holderOf($('e_key').value).name || ''; }
+function renderReasons(){
+  const cur = $('e_reason').value;
+  $('reasons').innerHTML = REASONS.map(r => `<span class="chip ${r === cur ? 'on' : ''}" data-reason="${esc(r)}">${r}</span>`).join('');
+}
+$('reasons').addEventListener('click', e => { const c = e.target.closest('[data-reason]'); if(!c) return; $('e_reason').value = c.dataset.reason; renderReasons(); $('e_to').focus(); });
+$('e_reason').addEventListener('input', renderReasons);
+$('e_key').addEventListener('change', autoFrom);
+$('nowBtn').onclick = () => { $('e_time').value = nowTime(); };
+$('cancelEdit').onclick = resetForm;
+$('saveEntry').onclick = saveEntry;
+$('form').addEventListener('keydown', e => { if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); saveEntry(); } });
+function saveEntry(){
+  if(!keys.length){ openSetup(); return toast('Add your keys first'); }
+  const e = { id: editing || uid(), date:$('e_date').value, time:$('e_time').value, keyId:$('e_key').value,
+    from:$('e_from').value.trim(), to:$('e_to').value.trim(), reason:$('e_reason').value.trim(), auth:$('e_auth').value.trim(), remarks:$('e_remarks').value.trim() };
+  if(!e.date || !e.to) return toast('Fill in the date and the officer taking over');
+  const i = entries.findIndex(x => x.id === e.id);
+  if(i >= 0) entries[i] = e; else entries.push(e);
+  persist(); toast(editing ? 'Entry updated' : 'Entry saved');
+  resetForm(); renderAll();
+}
+
+/* ---------- register ---------- */
+function filtered(){
+  const f = $('f_from').value, t = $('f_to').value, k = $('f_key').value;
+  return sortEntries(entries).filter(e => (!f || e.date >= f) && (!t || e.date <= t) && (!k || e.keyId === k));
+}
+function renderReg(){
+  const list = filtered().reverse();
+  $('countInfo').textContent = `${list.length} entr${list.length === 1 ? 'y' : 'ies'}`;
+  $('reg').tBodies[0].innerHTML = list.length ? list.map(e => `<tr>
+    <td style="white-space:nowrap">${fmtDate(e.date)}</td><td style="white-space:nowrap">${fmtTime(e.time)}</td><td><b>${esc(keyName(e.keyId))}</b></td>
+    <td>${esc(e.from)}</td><td>${esc(e.reason)}</td><td>${esc(e.to)}</td><td>${esc(e.auth)}</td><td>${esc(e.remarks)}</td>
+    <td style="white-space:nowrap;text-align:right"><button class="btn sm" data-edit="${e.id}">Edit</button> <button class="btn sm ghost" data-del="${e.id}" title="Delete">${X}</button></td></tr>`).join('')
+    : '<tr><td colspan="9" class="empty">No entries for this filter</td></tr>';
+}
+$('reg').addEventListener('click', ev => {
+  const ed = ev.target.closest('[data-edit]'), dl = ev.target.closest('[data-del]');
+  if(ed){
+    const e = entries.find(x => x.id === ed.dataset.edit); editing = e.id;
+    $('e_date').value = e.date; $('e_time').value = e.time; $('e_key').value = e.keyId; $('e_from').value = e.from; $('e_to').value = e.to;
+    $('e_reason').value = e.reason; $('e_auth').value = e.auth; $('e_remarks').value = e.remarks;
+    $('formTitle').textContent = 'Edit entry'; $('cancelEdit').hidden = false; $('saveEntry').textContent = 'Update entry';
+    renderReasons(); window.scrollTo({top:0, behavior:'smooth'});
+  }
+  if(dl && confirm('Delete this entry?')){ entries = entries.filter(x => x.id !== dl.dataset.del); persist(); renderAll(); }
+});
+['f_from','f_to','f_key'].forEach(id => $(id).addEventListener('input', renderReg));
+document.querySelectorAll('[data-range]').forEach(c => c.onclick = () => {
+  const d = new Date(), y = d.getFullYear(), m = d.getMonth();
+  const iso = x => `${x.getFullYear()}-${pad2(x.getMonth() + 1)}-${pad2(x.getDate())}`;
+  if(c.dataset.range === 'month'){ $('f_from').value = iso(new Date(y, m, 1)); $('f_to').value = iso(new Date(y, m + 1, 0)); }
+  if(c.dataset.range === 'last'){ $('f_from').value = iso(new Date(y, m - 1, 1)); $('f_to').value = iso(new Date(y, m, 0)); }
+  if(c.dataset.range === 'all'){ $('f_from').value = ''; $('f_to').value = ''; }
+  document.querySelectorAll('[data-range]').forEach(x => x.classList.toggle('on', x === c));
+  renderReg();
+});
+
+/* ---------- board ---------- */
+function renderBoard(){
+  $('board').innerHTML = keys.length ? keys.map(k => { const h = holderOf(k.id); return `<div class="holder"><div class="ic">${KEYICON}</div>
+    <div><b>${esc(k.desc)}</b><small>${[k.model, k.number].filter(Boolean).map(esc).join(' · ') || 'No model / number'}</small></div>
+    <div class="who"><b>${esc(h.name || 'Not set')}</b><small>${h.since ? 'since ' + fmtDate(h.since) + (h.time ? ' ' + fmtTime(h.time) : '') : ''}</small></div></div>`; }).join('')
+    : '<div class="empty">No keys yet.<br><button class="btn sm" style="margin-top:10px" onclick="openSetup()">Set up keys</button></div>';
+}
+
+/* ---------- setup ---------- */
+function keyRow(k){ return `<tr data-id="${k.id}"><td><input data-f="desc" value="${esc(k.desc)}" placeholder="e.g. Vault Door 1"></td><td><input data-f="model" value="${esc(k.model)}"></td>
+  <td><input data-f="number" value="${esc(k.number)}"></td><td><input data-f="dupLoc" value="${esc(k.dupLoc)}" placeholder="e.g. Kollupitiya branch"></td>
+  <td><input type="date" data-f="dupDate" value="${esc(k.dupDate)}"></td><td><input data-f="holder" list="staffDl" value="${esc(k.holder)}" placeholder="Holder at start"></td>
+  <td><button class="btn sm ghost" data-rm>${X}</button></td></tr>`; }
+function openSetup(){
+  $('keyTbl').tBodies[0].innerHTML = (keys.length ? keys : [{id:uid(), desc:'', model:'', number:'', dupLoc:'', dupDate:'', holder:''}]).map(keyRow).join('');
+  $('staffTa').value = S.staff.join('\n');
+  $('setupModal').classList.add('on');
+}
+$('setupBtn').onclick = openSetup;
+$('addKey').onclick = () => $('keyTbl').tBodies[0].insertAdjacentHTML('beforeend', keyRow({id:uid(), desc:'', model:'', number:'', dupLoc:'', dupDate:'', holder:''}));
+$('keyTbl').addEventListener('click', e => { if(e.target.closest('[data-rm]')) e.target.closest('tr').remove(); });
+$('saveSetup').onclick = () => {
+  keys = [...$('keyTbl').tBodies[0].rows].map(tr => { const k = {id:tr.dataset.id}; tr.querySelectorAll('[data-f]').forEach(i => k[i.dataset.f] = i.value.trim()); return k; }).filter(k => k.desc);
+  patchSettings({staff: $('staffTa').value.split('\n').map(s => s.trim()).filter(Boolean)}); S = getSettings();
+  persist(); $('setupModal').classList.remove('on'); renderAll(); autoFrom(); toast('Saved');
+};
+$('setupModal').addEventListener('click', e => { if(e.target === e.currentTarget || e.target.matches('[data-close]')) $('setupModal').classList.remove('on'); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') $('setupModal').classList.remove('on'); });
+
+/* ---------- PDF (register book layout) ---------- */
+$('pdfBtn').onclick = () => {
+  const list = filtered();
+  if(!list.length) return toast('No entries in this range');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:'landscape', unit:'mm', format:'a4'});
+  const W = 297, grey = [110,110,115];
+  const f = $('f_from').value || list[0].date, t = $('f_to').value || list[list.length - 1].date;
+  const range = `${fmtDate(f)} to ${fmtDate(t)}`;
+  const usedKeys = keys.filter(k => list.some(e => e.keyId === k.id));
+  const head = () => pdfHeader(doc, {main:'KEY REGISTER', sub:'Branch / Dept: ' + S.branch}, 'Period: ' + range);
+  head();
+  doc.autoTable({ startY:28, margin:{left:10, right:10}, theme:'grid',
+    head:[['Description of key','Model','Number','Lodgement of duplicate: location','Date of lodgement']],
+    body:usedKeys.map(k => [k.desc, k.model || '', k.number || '', k.dupLoc || '', fmtDate(k.dupDate)]),
+    styles:{fontSize:8, cellPadding:1.2, lineColor:[215,215,220], lineWidth:.2, textColor:30},
+    headStyles:{fillColor:[245,245,247], textColor:grey, fontSize:7.5} });
+  doc.autoTable({ startY:doc.lastAutoTable.finalY + 5, margin:{left:10, right:10, top:28}, theme:'grid',
+    head:[['Date','Description of key','Name of officer handing over','Signature','Reason','Name of officer taking over','Signature','Time','Authorised by','Remarks']],
+    body:list.map(e => [fmtDate(e.date), keyName(e.keyId), e.from, '', e.reason, e.to, '', fmtTime(e.time), e.auth, e.remarks]),
+    styles:{fontSize:8, cellPadding:1.4, lineColor:[215,215,220], lineWidth:.2, textColor:30, minCellHeight:9, valign:'middle'},
+    headStyles:{fillColor:[237,28,36], textColor:255, fontSize:7.3, valign:'middle'},
+    columnStyles:{0:{cellWidth:20}, 1:{cellWidth:34}, 2:{cellWidth:34}, 3:{cellWidth:24}, 4:{cellWidth:34}, 5:{cellWidth:34}, 6:{cellWidth:24}, 7:{cellWidth:18}, 8:{cellWidth:28}},
+    didDrawPage: d => { if(d.pageNumber > 1) head(); } });
+  let y = doc.lastAutoTable.finalY + 14;
+  if(y > 190){ doc.addPage(); head(); y = 40; }
+  ['Prepared by','Checked by','Branch Manager'].forEach((l, i) => { const x = 10 + i * 95; doc.setDrawColor(200); doc.line(x, y, x + 80, y); doc.setFontSize(7.5); doc.setTextColor(...grey); doc.text(l, x, y + 4); });
+  const pages = doc.internal.getNumberOfPages();
+  for(let i = 1; i <= pages; i++){ doc.setPage(i); doc.setFontSize(7); doc.setTextColor(...grey); doc.text(`Generated with DocArc · ${S.branch} · Page ${i} of ${pages}`, W / 2, 204, {align:'center'}); }
+  doc.save(`KeyRegister_${S.branch.replace(/\W+/g,'')}_${f}_to_${t}.pdf`);
+};
+
+function renderAll(){ fillKeySelects(); renderBoard(); renderReg(); }
+renderAll(); resetForm();
+document.querySelector('[data-range="month"]').click();
+</script>
+</body>
+</html>
