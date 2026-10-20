@@ -61,20 +61,85 @@
 .review-grid .stat{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .review-grid .stat small{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase}
 .review-grid .stat b{display:block;font-size:19px;font-variant-numeric:tabular-nums}
+/* ---------- worksheet mode ---------- */
+.modes{display:flex;gap:4px;background:var(--field);border:1px solid var(--line);padding:4px;border-radius:12px}
+.modes button{border:0;background:none;font:inherit;font-weight:600;color:var(--muted);padding:6px 12px;border-radius:9px;cursor:pointer}
+.modes button.on{background:#fff;color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.bbar{position:sticky;top:61px;z-index:15;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:10px;background:var(--bg);padding:10px 0 12px;margin-bottom:6px}
+.light{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s}
+.light:hover{border-color:var(--muted)}
+.light .dot{width:14px;height:14px;border-radius:50%;flex:none;background:#D4D4D8;box-shadow:0 0 0 4px #F4F4F5}
+.light.ok .dot{background:var(--ok);box-shadow:0 0 0 4px var(--ok-soft)}
+.light.bad .dot{background:var(--bad);box-shadow:0 0 0 4px var(--bad-soft)}
+.light small{display:block;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.light b{font-size:15px;font-variant-numeric:tabular-nums}
+.light.bad b{color:var(--bad)}
+.bactions{display:flex;gap:8px;align-items:center}
+.issues-btn{position:relative}
+.issues-btn .n{background:var(--bad);color:#fff;border-radius:99px;padding:0 7px;font-size:11px;margin-left:2px}
+.issues-btn .n.w{background:#D97706}
+.issues-btn .n.z{background:var(--ok)}
+.ipanel{position:absolute;right:0;top:calc(100% + 6px);width:420px;max-height:60vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.15);padding:8px;display:none;z-index:30}
+.ipanel.on{display:block}
+.issue{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:10px;cursor:pointer}
+.issue:hover{background:var(--field)}
+.issue i{font-style:normal;font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;flex:none;margin-top:2px}
+.issue i.e{background:var(--bad-soft);color:#991B1B}.issue i.w{background:#FEF3C7;color:#92400E}
+.practice{background:#FFF7ED;border:1px solid #FED7AA;color:#7C2D12;border-radius:14px;padding:12px 16px;margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sheet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.sheet .full{grid-column:1/-1}
+.sheet .card{margin:0}
+.sheet .col{display:flex;flex-direction:column;gap:16px}
+.ch{display:flex;align-items:center;gap:10px;margin:-2px 0 14px}
+.ch .no{width:24px;height:24px;border-radius:7px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-weight:700;font-size:12px}
+.ch b{font-size:15px}.ch .tot{margin-left:auto;font-weight:700;font-variant-numeric:tabular-nums}
+.ch .tot small{color:var(--muted);font-weight:600;margin-right:6px}
+.fl{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:8px 14px;align-items:center}
+.fl label{margin:0;font-size:13px;color:var(--ink);font-weight:500;display:flex;align-items:center;gap:6px}
+.tip{width:17px;height:17px;border-radius:50%;border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:700;display:inline-grid;place-items:center;cursor:help;position:relative;flex:none}
+.tip:hover{border-color:var(--brand);color:var(--brand)}
+.tip:hover:after{content:attr(data-tip);position:absolute;left:22px;top:-6px;width:260px;background:var(--ink);color:#fff;font-weight:500;font-size:12px;line-height:1.4;padding:8px 10px;border-radius:8px;z-index:40;text-transform:none;letter-spacing:0}
+input.err{border-color:var(--bad);background:#FFF5F5}
+input.warn{border-color:#F59E0B;background:#FFFBEB}
+.subrows{grid-column:1/-1;background:var(--field);border:1px solid var(--line);border-radius:12px;padding:10px}
+.subrows table td{padding:4px}
+.subrows .chips{margin:0 0 8px}
+.cfbox{background:var(--brand);color:#fff;border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
+.cfbox small{opacity:.85;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;display:block}
+.cfbox b{font-size:26px;font-variant-numeric:tabular-nums}
+.cfbox .eq{font-size:12px;opacity:.85;text-align:right}
+.ct{width:100%}
+.ct td{padding:4px 6px}.ct td:first-child{font-weight:700;width:90px}
+.ct td.v{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);width:150px}
+.ct tr.t td{border-top:1px solid var(--line);font-weight:700;color:var(--ink)}
+.ct input{max-width:130px}
+.gt{display:flex;justify-content:space-between;align-items:center;border-radius:14px;padding:14px 18px;font-weight:700}
+.gt.ok{background:var(--ok-soft);color:#14532D}.gt.bad{background:var(--bad-soft);color:#7F1D1D}.gt.na{background:var(--field);color:var(--muted);border:1px solid var(--line)}
+.gt b{font-size:20px;font-variant-numeric:tabular-nums}
+.tour-focus{position:relative;z-index:70!important;box-shadow:0 0 0 4px var(--brand),0 0 0 9999px rgba(20,20,24,.5)!important;border-radius:14px}
+.tourpop{position:fixed;z-index:80;width:340px;background:#fff;border-radius:14px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.tourpop b{display:block;font-size:15px;margin-bottom:4px}
+.tourpop p{margin:0 0 12px;color:var(--muted)}
+@media (max-width:1100px){.sheet{grid-template-columns:1fr}.bbar{grid-template-columns:1fr 1fr}.bactions{grid-column:1/-1}}
 @media (max-width:1200px){.layout{grid-template-columns:1fr 300px}.navcol{display:none}}
 @media (max-width:860px){.layout{grid-template-columns:1fr}.sticky{position:static}.stage{padding:24px}}
 </style>
 </head>
 <body>
 <main>
-  <div class="row" style="margin-bottom:16px">
+  <div class="row" style="margin-bottom:8px">
     <div><b style="font-size:18px">Vault Register</b> <span class="hint">Form CSV 078</span></div>
+    <div class="modes"><button data-mode="sheet">Worksheet</button><button data-mode="guide">Guide me</button></div>
     <span class="spacer"></span>
-    <span class="hint"><span class="kbd">Enter</span> next &nbsp; <span class="kbd">Shift</span>+<span class="kbd">Enter</span> back</span>
+    <button class="btn" id="tourBtn">Quick tour</button>
+    <button class="btn" id="practiceBtn">Practice</button>
     <button class="btn" id="historyBtn">Saved days</button>
     <button class="btn" id="newDayBtn">Start a new day</button>
   </div>
-  <div class="layout">
+  <div class="bbar" id="bbar"></div>
+  <div id="practiceBar"></div>
+  <div id="sheetView"></div>
+  <div class="layout" id="guideView">
     <aside class="card sticky navcol nav" id="nav"></aside>
     <section class="card stage" id="stage"></section>
     <aside class="sticky">
@@ -144,12 +209,12 @@ function carryForward(){
   });
 }
 function newDay(date){
-  v = blank(); v.date = date; carryForward(); step = 0; save(); render();
+  v = blank(); v.date = date; carryForward(); step = 0; save(); renderAll();
 }
 if(!v){ const last = Object.values(days).sort((a,b) => b.date.localeCompare(a.date))[0]; v = blank(); v.date = today(); if(last && last.date === today()) v = JSON.parse(JSON.stringify(last)); carryForward(); }
 
 let saveT;
-function save(){ clearTimeout(saveT); saveT = setTimeout(() => { store.set('vault.draft', v); store.set('vault.step', step); }, 250); }
+function save(){ if(typeof practice !== 'undefined' && practice) return; clearTimeout(saveT); saveT = setTimeout(() => { store.set('vault.draft', v); store.set('vault.step', step); }, 250); }
 
 /* ---------------- calculations ---------------- */
 const sumRows = rs => (rs || []).reduce((t,r) => t + num(r.amt), 0);
@@ -344,7 +409,7 @@ function renderStage(focus = true){
     </div>`;
   if(focus){ const f = $('stage').querySelector('.body input:not([type=date]), .body input'); if(f) f.focus(); }
 }
-function render(focus){ renderNav(); renderStage(focus); renderPos(); }
+function render(focus){ renderNav(); renderStage(focus); renderPos(); updateBar(); }
 function go(i){ step = Math.max(0, Math.min(STEPS.length - 1, i)); save(); render(); window.scrollTo({top:0, behavior:'smooth'}); }
 
 /* live refresh of computed bits on the current step without re-rendering inputs */
@@ -355,7 +420,7 @@ function refresh(){
   if(s.type === 'fx') FX.forEach(cur => $('bal-' + cur).innerHTML = `<b>${moneyOrDash(fxBal(v.fx[cur]))}</b>`);
   if(s.type === 'summary') $('tot').innerHTML = `<b style="color:var(--brand);font-size:17px">${money(c.branch)}</b>`;
   if(s.type === 'recon') reconRows().forEach(r => { const el = $('rc-' + r.key); if(el) el.innerHTML = reconPill(r); });
-  renderPos(); renderNav(); save();
+  renderPos(); renderNav(); updateBar(); save();
 }
 
 /* ---------------- events ---------------- */
@@ -388,13 +453,13 @@ stage.addEventListener('click', e => {
   }
   else if(t.matches('[data-now]')){ setPath(t.dataset.now, nowTime()); renderStage(false); refresh(); }
   else if(t.matches('[data-copykeys]')){ v.kIn = Object.assign({}, v.kIn, {k1:v.kOut.k1, k2:v.kOut.k2, comb:v.kOut.comb}); renderStage(false); refresh(); }
-  else if(t.matches('[data-pdf]')){ saveDay(true); makePdf(); }
+  else if(t.matches('[data-pdf]')) downloadPdf();
   else if(t.matches('[data-saveday]')) saveDay();
-  else if(t.matches('[data-nextday]')){ saveDay(true); const d = new Date(v.date); d.setDate(d.getDate() + 1); newDay(d.toISOString().slice(0,10)); toast('Day saved. Next day started.'); }
+  else if(t.matches('[data-nextday]')){ if(!saveDay(true)) return; const d = new Date(v.date); d.setDate(d.getDate() + 1); newDay(d.toISOString().slice(0,10)); toast('Day saved. Next day started.'); }
 });
 function focusLastRow(field){ const s = STEPS[step]; stage.querySelector(`[data-p="${s.id}.${v[s.id].length - 1}.${field}"]`)?.focus(); }
 document.addEventListener('keydown', e => {
-  if(e.key !== 'Enter' || $('histModal').classList.contains('on')) return;
+  if(mode !== 'guide' || e.key !== 'Enter' || $('histModal').classList.contains('on')) return;
   if(!stage.contains(e.target) && e.target !== document.body) return;
   if(e.target.tagName === 'BUTTON') return;
   const s = STEPS[step], p = e.target.dataset.p || '';
@@ -416,11 +481,14 @@ document.addEventListener('keydown', e => {
 
 /* ---------------- days ---------------- */
 function saveDay(silent){
-  if(!v.date) return toast('Pick a date first');
+  if(practice){ toast('Practice mode: nothing is saved'); return false; }
+  if(!v.date){ toast('Pick a date first'); return false; }
   v.tellers = (v.tellers || []).filter(r => r.who || r.amt);
   days[v.date] = Object.assign(JSON.parse(JSON.stringify(v)), {cf: calc().cf, branchTotal: calc().branch});
   store.set('vault.days', days); save(); renderNav();
+  v.savedAs = v.date; days[v.date].savedAs = v.date; store.set('vault.days', days);
   if(!silent) toast('Day saved');
+  updateBar(); return true;
 }
 $('newDayBtn').onclick = () => {
   const last = Object.values(days).sort((a,b) => b.date.localeCompare(a.date))[0];
@@ -438,7 +506,7 @@ $('historyBtn').onclick = () => { renderHist(); $('histModal').classList.add('on
 $('histModal').addEventListener('click', e => {
   const t = e.target;
   if(t === e.currentTarget || t.matches('[data-close]')) return $('histModal').classList.remove('on');
-  if(t.dataset.open){ v = JSON.parse(JSON.stringify(days[t.dataset.open])); step = STEPS.length - 1; save(); render(); $('histModal').classList.remove('on'); }
+  if(t.dataset.open){ v = JSON.parse(JSON.stringify(days[t.dataset.open])); step = STEPS.length - 1; save(); renderAll(); $('histModal').classList.remove('on'); }
   if(t.dataset.hpdf){ const keep = v; v = JSON.parse(JSON.stringify(days[t.dataset.hpdf])); makePdf(); v = keep; }
   if(t.dataset.hdel && confirm('Delete the saved register for ' + fmtDate(t.dataset.hdel) + '?')){ delete days[t.dataset.hdel]; store.set('vault.days', days); renderHist(); }
 });
@@ -574,7 +642,387 @@ function makePdf(){
   doc.save(`VaultRegister_${S.branch.replace(/\W+/g,'')}_${v.date}.pdf`);
 }
 
-render();
+/* =====================================================================
+   WORKSHEET MODE: one page laid out like CSV 078, with a live balance
+   bar, validation and a practice / tour mode for training.
+   ===================================================================== */
+var practice = false, practiceTry = false, realDraft = null;
+let mode = store.get('vault.mode', 'sheet');
+let issues = [];
+
+const SAMPLE = { date:'2026-07-21', bf:'36102060',
+  fromRows:[{who:'6489', amt:'2000000'}, {who:'5550', amt:'6500000'}],
+  toRows:[{who:'6489', amt:'5000000'}, {who:'5550', amt:'10000000'}, {who:'6489', amt:'10000'}],
+  serv:{5000:'4700', 1000:'2500', 500:'3000', 100:'7000', 50:'4000', 20:'3000', 2000:'400'},
+  unserv:{5000:'57', 1000:'35', 500:'11', 100:'41', 50:'2', 20:'18', 2000:'1'},
+  tellers:[{who:'5550', amt:'916211.32'}, {who:'5992', amt:'1329895.77'}, {who:'6489', amt:'520409.36'}],
+  fx:{EUR:{bf:'100', rec:'300'}, USD:{bf:'8010', rec:'9000'}, INR:{bf:'28000'}},
+  sum:{sv:'', atm:'4078500', crm:'8751800'},
+  kOut:{open:'08:53', close:'09:00', k1:'Officer A', k2:'Officer B', comb:'Officer A'},
+  kIn:{open:'17:20', close:'17:25', k1:'Officer A', k2:'Officer B', comb:'Officer A'} };
+
+const TIPS = {
+  date:'The business date of this register page.',
+  bf:'Yesterday\'s Vault Reserve C/F. Filled in automatically from the last saved day. Check it against the book.',
+  hoIn:'Cash received into the vault from Head Office or another bank (cash in transit).',
+  sv1In:'Cash moved from Sub Vault 1 (365 Banking) into the main vault.',
+  sv2In:'Cash moved from Sub Vault 2 (365 Banking) into the main vault.',
+  fromRows:'Cash returned to the vault by each teller or machine. Use the teller-to-vault transfer slips.',
+  unsRecv:'Unserviceable (damaged) notes received into the vault today.',
+  hoOut:'Cash sent from the vault to Head Office or another bank.',
+  sv1Out:'Cash moved from the main vault to Sub Vault 1.',
+  sv2Out:'Cash moved from the main vault to Sub Vault 2.',
+  toRows:'Cash issued from the vault to each teller or machine (ATM loading). Use the vault-to-teller transfer slips.',
+  unsDisp:'Unserviceable notes sent out of the vault (e.g. to Head Office).',
+  serv:'Count the good notes in the vault and enter the number of PIECES, not the value.',
+  coins:'Number of coins per denomination. Put loose small coins in as an amount.',
+  unserv:'Number of damaged notes held in the vault, per denomination.',
+  tellers:'Closing cash in each teller box at the end of the day.',
+  fx:'Foreign currency notes held in the vault. B/F comes from the last saved day.',
+  sum:'Cash held outside the main vault at the end of the day.',
+  recon:'Optional. From the system report "Branch Cash Position", enter the LKR position. Minus signs are ignored.',
+  keys:'Who held each key and the combination when the vault was opened and closed. Key 1 and Key 2 must be different people (dual control).'
+};
+const tip = k => TIPS[k] ? `<span class="tip" data-tip="${esc(TIPS[k])}">?</span>` : '';
+
+/* ---------- builders ---------- */
+const amtField = (p, label) => `<label for="in-${p}">${label} ${tip(p)}</label>${moneyIn(p).replace('<input', `<input id="in-${p}"`)}`;
+function rowsBlock(id, whoLabel, opts = {}){
+  const rows = v[id] = v[id] && v[id].length ? v[id] : [{who:'', amt:''}];
+  const chips = chipsFor({tellerOnly:opts.tellerOnly});
+  return `<div class="subrows">
+    ${chips.length ? `<div class="chips">${chips.map(x => `<span class="chip" data-schip="${id}" data-val="${esc(x)}">${esc(x)}</span>`).join('')}</div>` : ''}
+    <table><tbody>${rows.map((r,i) => `<tr>
+      <td style="width:42%"><input data-p="${id}.${i}.who" value="${esc(r.who)}" placeholder="${whoLabel}" autocomplete="off"></td>
+      <td>${moneyIn(`${id}.${i}.amt`)}</td>
+      <td style="width:36px"><button class="btn sm ghost" data-sdel="${id}" data-i="${i}" title="Remove line" tabindex="-1"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></td></tr>`).join('')}
+    </tbody></table>
+    <div class="row" style="margin-top:6px"><button class="btn sm" data-sadd="${id}">Add line</button><span class="spacer"></span><span class="hint">Subtotal</span><b data-out="rows:${id}"></b></div>
+  </div>`;
+}
+function countBlock(id, denoms, small){
+  const o = v[id] = v[id] || {};
+  return `<table class="ct"><tbody>
+    ${denoms.map(d => `<tr><td>x ${d.toLocaleString()}</td><td><input inputmode="numeric" data-p="${id}.${d}" value="${esc(o[d] || '')}" placeholder="pieces" autocomplete="off"></td><td class="v" data-out="cnt:${id}:${d}"></td></tr>`).join('')}
+    ${small ? `<tr><td>Small coins</td><td>${moneyIn(id + '.small')}</td><td class="v" data-out="small"></td></tr>` : ''}
+    <tr class="t"><td>Total</td><td></td><td class="v" data-out="${id}"></td></tr></tbody></table>`;
+}
+const card = (id, no, title, totKey, body, cls = '') =>
+  `<div class="card ${cls}" id="c-${id}"><div class="ch"><span class="no">${no}</span><b>${title}</b> ${tip(id)}${totKey ? `<span class="tot"><small>Total</small><span data-out="${totKey}"></span></span>` : ''}</div>${body}</div>`;
+
+function renderSheet(){
+  reconKeys = reconRows().map(r => r.key).join();
+  const keyCol = (w, title) => { const k = v[w] = v[w] || {}; return `<div><b style="display:block;margin-bottom:8px">${title}</b>
+    <div class="fl" style="grid-template-columns:120px minmax(0,1fr)">
+      <label>Time opened</label><div class="row" style="flex-wrap:nowrap"><input type="time" data-p="${w}.open" value="${k.open || ''}"><button class="btn sm" data-snow="${w}.open" tabindex="-1">Now</button></div>
+      <label>Time closed</label><div class="row" style="flex-wrap:nowrap"><input type="time" data-p="${w}.close" value="${k.close || ''}"><button class="btn sm" data-snow="${w}.close" tabindex="-1">Now</button></div>
+      <label>Key / Door 1</label><input list="staffDl2" data-p="${w}.k1" value="${esc(k.k1 || '')}">
+      <label>Key / Door 2</label><input list="staffDl2" data-p="${w}.k2" value="${esc(k.k2 || '')}">
+      <label>Combination</label><input list="staffDl2" data-p="${w}.comb" value="${esc(k.comb || '')}">
+    </div></div>`; };
+  $('sheetView').innerHTML = `
+  ${practiceTry ? practiceSheet() : ''}
+  <datalist id="staffDl2">${S.staff.map(n => `<option value="${esc(n)}">`).join('')}</datalist>
+  <div class="sheet">
+    <div class="col">
+      ${card('open', 1, 'Opening balance', '', `<div class="fl">
+        <label for="in-date">Date ${tip('date')}</label><input type="date" id="in-date" data-p="date" value="${v.date}">
+        ${amtField('bf', 'Vault reserve B/F')}</div>
+        <p class="hint" style="margin:8px 0 0" data-out="prevhint"></p>`)}
+      ${card('add', 2, 'Add: cash into the vault', 'add', `<div class="fl">
+        ${amtField('hoIn', 'From Head Office / other banks')}
+        ${amtField('sv1In', 'From Sub Vault 1 (365 Banking)')}
+        ${amtField('sv2In', 'From Sub Vault 2 (365 Banking)')}
+        <label>From tellers / ATM / CDM / CRM ${tip('fromRows')}</label><span></span>
+        ${rowsBlock('fromRows', 'From (teller no. or ATM)')}
+        ${amtField('unsRecv', 'Unserviceable currency received')}</div>`)}
+      ${card('ded', 3, 'Less: cash out of the vault', 'ded', `<div class="fl">
+        ${amtField('hoOut', 'To Head Office / other banks')}
+        ${amtField('sv1Out', 'To Sub Vault 1 (365 Banking)')}
+        ${amtField('sv2Out', 'To Sub Vault 2 (365 Banking)')}
+        <label>To tellers / ATM / CDM / CRM ${tip('toRows')}</label><span></span>
+        ${rowsBlock('toRows', 'To (teller no. or ATM)')}
+        ${amtField('unsDisp', 'Unserviceable currency dispatched')}</div>`)}
+      <div class="cfbox" id="c-cf"><div><small>Vault reserve C/F</small><b data-out="cf"></b></div><div class="eq">B/F + Additions - Deductions<br><span data-out="eq"></span></div></div>
+    </div>
+    <div class="col">
+      ${card('serv', 4, 'Serviceable notes (pieces)', 'serv', countBlock('serv', NOTES))}
+      ${card('coins', 5, 'Coins (pieces)', 'coins', countBlock('coins', COINS, true))}
+      ${card('unserv', 6, 'Unserviceable notes (pieces)', 'unserv', countBlock('unserv', NOTES))}
+      <div class="gt" id="c-gt" data-out="gt"></div>
+    </div>
+    ${card('tellers', 7, 'Teller boxes at end of day', 'tellers', `<div class="fl">${rowsBlock('tellers', 'Teller no.', {tellerOnly:true})}</div>
+      <div data-out="tw"></div>`)}
+    ${card('fx', 8, 'Foreign currency in vault', '', `<div class="tablewrap"><table><thead><tr><th>Currency</th><th class="num">B/F</th><th class="num">Received</th><th class="num">Sold</th><th class="num">Balance</th></tr></thead><tbody>
+      ${FX.map(cur => { v.fx[cur] = v.fx[cur] || {}; return `<tr><td><b>${cur}</b></td><td>${moneyIn(`fx.${cur}.bf`)}</td><td>${moneyIn(`fx.${cur}.rec`)}</td><td>${moneyIn(`fx.${cur}.sold`)}</td><td class="num"><b data-out="fx:${cur}"></b></td></tr>`; }).join('')}
+      </tbody></table></div>`)}
+    ${card('sum', 9, 'Branch cash summary', 'branch', `<div class="fl">
+      <label>Total cash in vault <span class="hint">(physical count)</span></label><b class="num" data-out="phys"></b>
+      ${amtField('sum.sv', 'Cash in sub vaults (365 Banking)')}
+      <label>Teller boxes at EOD <span class="hint">(from card 7)</span></label><b class="num" data-out="tellers"></b>
+      ${amtField('sum.atm', 'Cash in ATM at EOD')}
+      ${amtField('sum.crm', 'Cash in CRM / CDM at EOD')}
+      <label><b>Total cash at branch</b></label><b class="num" style="color:var(--brand);font-size:17px" data-out="branch"></b></div>`)}
+    ${card('recon', 10, 'System check: Branch Cash Position', '', `<div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">Register</th><th>System</th><th>Result</th></tr></thead><tbody>
+      ${reconRows().map(r => `<tr><td>${esc(r.label)}</td><td class="num" data-out="reconreg:${r.key}"></td><td>${moneyIn('recon.' + r.key)}</td><td data-out="recon:${r.key}"></td></tr>`).join('')}
+      </tbody></table></div>`)}
+    ${card('keys', 11, 'Key / combination holding', '', `<div class="sheet" style="gap:24px">${keyCol('kOut', 'Cash out')}${keyCol('kIn', 'Cash in')}</div>
+      <div class="row" style="margin-top:10px"><button class="btn sm" data-scopy>Cash in: same holders as cash out</button></div>`, 'full')}
+  </div>`;
+  refreshSheet();
+}
+
+/* ---------- live values ---------- */
+function tellerWise(){
+  const map = {};
+  const add = (no, k, n) => { no = String(no || '').trim(); if(!no || MACHINES.includes(no.toUpperCase())) return; (map[no] = map[no] || {no, out:0, back:0, box:null})[k] += n; };
+  (v.toRows || []).forEach(r => add(r.who, 'out', num(r.amt)));
+  (v.fromRows || []).forEach(r => add(r.who, 'back', num(r.amt)));
+  (v.tellers || []).forEach(r => { const no = String(r.who || '').trim(); if(!no) return; (map[no] = map[no] || {no, out:0, back:0, box:null}); map[no].box = (map[no].box || 0) + num(r.amt); });
+  return Object.values(map).sort((a,b) => a.no.localeCompare(b.no));
+}
+function outVal(key, c){
+  const [k, a, b] = key.split(':');
+  if(k === 'rows') return money(sumRows(v[a]));
+  if(k === 'cnt'){ const n = num(v[a][b]) * +b; return n ? money(n) : '–'; }
+  if(k === 'fx') return moneyOrDash(fxBal(v.fx[a] || {}));
+  if(k === 'reconreg'){ const r = reconRows().find(x => x.key === a); return r ? money(r.reg) : ''; }
+  if(k === 'recon'){ const r = reconRows().find(x => x.key === a); return r ? reconPill(r) : ''; }
+  if(k === 'tw'){ const tw = tellerWise(); return tw.length ? `<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>Teller</th><th class="num">Issued by vault</th><th class="num">Returned to vault</th><th class="num">Box at EOD</th></tr></thead><tbody>
+      ${tw.map(t => `<tr><td><b>${esc(t.no)}</b></td><td class="num">${moneyOrDash(t.out)}</td><td class="num">${moneyOrDash(t.back)}</td><td class="num">${t.box === null ? '<span class="pill bad">Missing</span>' : money(t.box)}</td></tr>`).join('')}
+      </tbody></table></div>` : ''; }
+  if(k === 'small') return moneyOrDash(num(v.coins.small));
+  if(k === 'eq') return `${money(num(v.bf))} + ${money(c.add)} - ${money(c.ded)}`;
+  if(k === 'prevhint'){ const p = prevDay(v.date); return p ? `Last saved day ${fmtDate(p.date)}, C/F ${money(p.cf)}` : 'No earlier day saved on this computer. Enter the B/F from the book.'; }
+  if(k === 'gt'){
+    if(!c.phys) return `<span>Grand total (physical count)</span><span>Not counted yet</span>`;
+    const ok = Math.abs(c.diff) < .005;
+    return `<span>Grand total ${money(c.phys)}<br><small style="font-weight:500">${ok ? 'Matches the vault reserve C/F' : (c.diff > 0 ? 'More' : 'Less') + ' than the C/F of ' + money(c.cf)}</small></span><b>${ok ? 'Balanced' : (c.diff > 0 ? '+' : '') + money(c.diff)}</b>`;
+  }
+  return money(c[k]);
+}
+function refreshSheet(){
+  const c = calc();
+  document.querySelectorAll('#sheetView [data-out]').forEach(el => {
+    const html = outVal(el.dataset.out, c);
+    if(el.innerHTML !== html) el.innerHTML = html;
+  });
+  const gt = $('c-gt'); if(gt) gt.className = 'gt ' + (!c.phys ? 'na' : Math.abs(c.diff) < .005 ? 'ok' : 'bad');
+  markFields();
+}
+
+/* ---------- validation ---------- */
+function validate(){
+  const out = [], c = calc();
+  const E = (msg, p) => out.push({lvl:'e', msg, p}), W = (msg, p) => out.push({lvl:'w', msg, p});
+  if(!v.date) E('Enter the date', 'date');
+  if(v.bf === '' || v.bf == null) E('Enter the vault reserve B/F', 'bf');
+  const scalars = ['bf','hoIn','sv1In','sv2In','unsRecv','hoOut','sv1Out','sv2Out','unsDisp','sum.sv','sum.atm','sum.crm'];
+  scalars.forEach(p => { if(num(getPath(p)) < 0) E('Amount cannot be negative', p); });
+  [['fromRows','Cash from tellers'], ['toRows','Cash to tellers'], ['tellers','Teller boxes']].forEach(([id, name]) => (v[id] || []).forEach((r, i) => {
+    if(r.amt && !String(r.who).trim()) E(`${name}: line ${i + 1} has an amount but no teller / machine`, `${id}.${i}.who`);
+    if(String(r.who).trim() && !r.amt) E(`${name}: enter the amount for ${r.who}`, `${id}.${i}.amt`);
+    if(num(r.amt) < 0) E(`${name}: amount cannot be negative`, `${id}.${i}.amt`);
+  }));
+  [['serv', NOTES, 'Serviceable notes'], ['coins', COINS, 'Coins'], ['unserv', NOTES, 'Unserviceable notes']].forEach(([id, ds, name]) => ds.forEach(d => {
+    const x = (v[id] || {})[d]; if(x !== undefined && x !== '' && !/^\d+$/.test(String(x).trim())) E(`${name} x ${d}: enter whole pieces only`, `${id}.${d}`);
+  }));
+  if(!c.phys) E('Count the notes in the vault (physical cash balance)', 'serv.5000');
+  else if(Math.abs(c.diff) >= .005) E(`Physical cash ${c.diff > 0 ? 'is more' : 'is less'} than the C/F by ${money(Math.abs(c.diff))}`, 'serv.5000');
+  ['kOut','kIn'].forEach(w => {
+    const k = v[w] || {}, name = w === 'kOut' ? 'Cash out' : 'Cash in';
+    if(k.k1 && k.k2 && k.k1.trim().toLowerCase() === k.k2.trim().toLowerCase()) E(`${name}: Key 1 and Key 2 must be held by different people`, `${w}.k2`);
+    if(k.open && k.close && k.close < k.open) E(`${name}: time closed is before time opened`, `${w}.close`);
+  });
+  const p = prevDay(v.date);
+  if(p && v.bf !== '' && Math.abs(num(v.bf) - num(p.cf)) >= .005) W(`B/F differs from the C/F of ${fmtDate(p.date)} (${money(p.cf)})`, 'bf');
+  if(v.date && days[v.date] && v.savedAs !== v.date && !practice) W(`A register for ${fmtDate(v.date)} is already saved. Saving will replace it.`, 'date');
+  tellerWise().forEach(t => { if(t.box === null && (t.out || t.back)) W(`Teller ${t.no} had cash movements but has no teller box entry`, 'tellers.0.who'); });
+  FX.forEach(cur => { const f = v.fx[cur] || {}; if(num(f.sold) > num(f.bf) + num(f.rec)) W(`${cur}: sold is more than B/F + received`, `fx.${cur}.sold`); });
+  const recent = Object.values(days).filter(d => d.date !== v.date).sort((a,b) => b.date.localeCompare(a.date)).slice(0, 10);
+  if(recent.length >= 3) scalars.filter(s => s !== 'bf').forEach(s => {
+    const mx = Math.max(...recent.map(d => num(s.split('.').reduce((o,k) => o == null ? o : o[k], d))));
+    if(mx > 0 && num(getPath(s)) > mx * 5) W(`Unusually large amount (${money(num(getPath(s)))}). Check for a typing mistake.`, s);
+  });
+  reconRows().forEach(r => { const sys = (v.recon || {})[r.key]; if(sys !== undefined && sys !== '' && Math.abs(r.reg - Math.abs(num(sys))) >= .005) W(`System check: ${r.label} differs by ${money(r.reg - Math.abs(num(sys)))}`, 'recon.' + r.key); });
+  return out;
+}
+function markFields(){
+  issues = validate();
+  document.querySelectorAll('#sheetView input.err, #sheetView input.warn').forEach(i => i.classList.remove('err','warn'));
+  issues.forEach(x => { const el = document.querySelector(`#sheetView [data-p="${x.p}"]`); if(el && !el.classList.contains('err')) el.classList.add(x.lvl === 'e' ? 'err' : 'warn'); });
+  updateBar();
+}
+
+/* ---------- balance bar ---------- */
+function updateBar(){
+  if(!$('bbar')) return;
+  const c = calc();
+  if(mode === 'guide') issues = validate();
+  const errs = issues.filter(x => x.lvl === 'e').length, warns = issues.length - errs;
+  const hasBf = v.bf !== '' && v.bf != null;
+  const physOk = c.phys && Math.abs(c.diff) < .005;
+  const rr = reconRows().filter(r => (v.recon || {})[r.key] !== undefined && v.recon[r.key] !== '');
+  const rBad = rr.filter(r => Math.abs(r.reg - Math.abs(num(v.recon[r.key]))) >= .005).length;
+  const open = $('ipanel') && $('ipanel').classList.contains('on');
+  $('bbar').innerHTML = `
+    <div class="light ${hasBf ? 'ok' : ''}" data-jump="c-add"><span class="dot"></span><div><small>Vault movement (C/F)</small><b>${hasBf ? money(c.cf) : 'Enter B/F'}</b></div></div>
+    <div class="light ${!c.phys ? '' : physOk ? 'ok' : 'bad'}" data-jump="c-serv"><span class="dot"></span><div><small>Physical cash vs C/F</small><b>${!c.phys ? 'Not counted' : physOk ? 'Balanced' : 'Diff ' + money(c.diff)}</b></div></div>
+    <div class="light ${!rr.length ? '' : rBad ? 'bad' : 'ok'}" data-jump="c-recon"><span class="dot"></span><div><small>System check</small><b>${!rr.length ? 'Optional' : rBad ? rBad + ' difference' + (rBad > 1 ? 's' : '') : 'All match'}</b></div></div>
+    <div class="bactions">
+      <div class="issues-btn"><button class="btn" id="issuesBtn">Issues <span class="n ${errs ? '' : warns ? 'w' : 'z'}">${errs ? errs + ' error' + (errs > 1 ? 's' : '') : warns ? warns + ' warning' + (warns > 1 ? 's' : '') : 'None'}</span></button>
+        <div class="ipanel ${open ? 'on' : ''}" id="ipanel">${issues.length ? issues.map((x, i) => `<div class="issue" data-issue="${i}"><i class="${x.lvl}">${x.lvl === 'e' ? 'ERROR' : 'CHECK'}</i><span>${esc(x.msg)}</span></div>`).join('') : '<div class="hint" style="padding:12px">No issues. The register is ready.</div>'}</div></div>
+      <button class="btn" id="saveBtn">Save day</button>
+      <button class="btn pri" id="pdfBtn">Download PDF</button>
+    </div>`;
+}
+function jumpTo(p){
+  if(mode === 'guide') setMode('sheet');
+  const el = document.querySelector(`#sheetView [data-p="${p}"]`);
+  if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(() => el.focus(), 250); }
+  $('ipanel')?.classList.remove('on');
+}
+$('bbar').addEventListener('click', e => {
+  const l = e.target.closest('[data-jump]'), is = e.target.closest('[data-issue]');
+  if(l){ if(mode === 'guide') setMode('sheet'); $(l.dataset.jump)?.scrollIntoView({behavior:'smooth', block:'start'}); }
+  if(is) jumpTo(issues[+is.dataset.issue].p);
+  if(e.target.closest('#issuesBtn')) $('ipanel').classList.toggle('on');
+  if(e.target.closest('#saveBtn')) saveDay();
+  if(e.target.closest('#pdfBtn')) downloadPdf();
+});
+document.addEventListener('click', e => { if(!e.target.closest('.issues-btn')) $('ipanel')?.classList.remove('on'); });
+
+function downloadPdf(){
+  issues = validate();
+  const errs = issues.filter(x => x.lvl === 'e');
+  if(errs.length){ toast(`Fix ${errs.length} error${errs.length > 1 ? 's' : ''} before downloading`); updateBar(); $('ipanel').classList.add('on'); return; }
+  if(!practice) saveDay(true);
+  makePdf();
+}
+
+/* ---------- worksheet events ---------- */
+const sv = $('sheetView');
+sv.addEventListener('input', e => {
+  const p = e.target.dataset.p; if(!p) return;
+  setPath(p, e.target.value);
+  if(p === 'bf') v.bfAuto = false;
+  if(/^fx\.\w+\.bf$/.test(p)) v.fx[p.split('.')[1]].bfAuto = false;
+  if(p === 'date'){ carryForward(); renderSheet(); }
+  else refreshSheet();
+  save();
+});
+let reconKeys = '';
+sv.addEventListener('focusout', e => {
+  if(/^tellers\.\d+\.who$/.test(e.target.dataset.p || '')){
+    const k = reconRows().map(r => r.key).join();
+    if(k !== reconKeys) setTimeout(() => { reconKeys = k; rerenderKeep(); }, 0);
+  } if(e.target.classList.contains('money') && e.target.value) e.target.value = money(num(e.target.value)); });
+sv.addEventListener('focusin', e => { if(e.target.classList.contains('money') && e.target.value){ e.target.value = String(num(e.target.value)); e.target.select(); } });
+function rerenderKeep(p){
+  const a = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.p : null;
+  const y = window.scrollY; renderSheet(); window.scrollTo(0, y);
+  const el = a && sv.querySelector(`[data-p="${a}"]`); if(el) el.focus();
+}
+sv.addEventListener('click', e => {
+  const t = e.target.closest('button, .chip'); if(!t) return;
+  if(t.dataset.sadd){ v[t.dataset.sadd].push({who:'', amt:''}); rerenderKeep(); sv.querySelector(`[data-p="${t.dataset.sadd}.${v[t.dataset.sadd].length - 1}.who"]`).focus(); save(); }
+  else if(t.dataset.sdel){ v[t.dataset.sdel].splice(+t.dataset.i, 1); rerenderKeep(); save(); }
+  else if(t.dataset.schip){
+    const rows = v[t.dataset.schip]; let i = rows.findIndex(r => !String(r.who).trim());
+    if(i < 0){ rows.push({who:'', amt:''}); i = rows.length - 1; }
+    rows[i].who = t.dataset.val; rerenderKeep(); sv.querySelector(`[data-p="${t.dataset.schip}.${i}.amt"]`).focus(); save();
+  }
+  else if(t.dataset.snow){ setPath(t.dataset.snow, nowTime()); rerenderKeep(); save(); }
+  else if(t.matches('[data-scopy]')){ v.kIn = Object.assign({}, v.kIn, {k1:v.kOut.k1, k2:v.kOut.k2, comb:v.kOut.comb}); rerenderKeep(); save(); }
+  else if(t.matches('[data-ptry]')) startPractice(true);
+});
+sv.addEventListener('keydown', e => {
+  if(e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
+  e.preventDefault();
+  const p = e.target.dataset.p || '', m = p.match(/^(fromRows|toRows|tellers)\.(\d+)\.amt$/);
+  if(e.target.classList.contains('money') && e.target.value) e.target.value = money(num(e.target.value));
+  if(m && +m[2] === v[m[1]].length - 1 && e.target.value){
+    v[m[1]].push({who:'', amt:''}); rerenderKeep(); sv.querySelector(`[data-p="${m[1]}.${v[m[1]].length - 1}.who"]`).focus(); return;
+  }
+  const ins = [...sv.querySelectorAll('input:not([type=hidden])')]; const i = ins.indexOf(e.target);
+  const next = ins[e.shiftKey ? i - 1 : i + 1]; if(next) next.focus();
+});
+
+/* ---------- modes ---------- */
+function setMode(m){
+  mode = m; store.set('vault.mode', m);
+  document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  $('sheetView').hidden = m !== 'sheet'; $('guideView').hidden = m !== 'guide';
+  if(m === 'guide') $('sheetView').innerHTML = ''; else $('stage').innerHTML = '';
+  renderAll();
+}
+document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+function renderAll(){ if(mode === 'guide') render(); else renderSheet(); renderPractice(); updateBar(); }
+
+/* ---------- practice mode ---------- */
+function startPractice(tryYourself){
+  if(!practice) realDraft = JSON.parse(JSON.stringify(v));
+  practice = true; practiceTry = !!tryYourself;
+  v = Object.assign(blank(), JSON.parse(JSON.stringify(tryYourself ? {date:SAMPLE.date, bf:SAMPLE.bf} : SAMPLE)));
+  v.bfAuto = false; FX.forEach(c => { v.fx[c] = v.fx[c] || {}; v.fx[c].bfAuto = false; });
+  if(tryYourself){ v.fx = JSON.parse(JSON.stringify(SAMPLE.fx)); FX.forEach(c => { v.fx[c] = v.fx[c] || {}; delete v.fx[c].rec; }); }
+  step = 0; renderAll(); window.scrollTo({top:0, behavior:'smooth'});
+}
+function stopPractice(){ practice = false; practiceTry = false; v = realDraft || v; realDraft = null; renderAll(); toast('Back to your real register'); }
+function renderPractice(){
+  $('practiceBar').innerHTML = practice ? `<div class="practice"><b>Practice mode.</b> <span>${practiceTry ? 'Type in the sample figures shown below and see if the register balances.' : 'This is a worked example (21/07/2026). Look through each card, or clear it and try yourself.'} Nothing is saved.</span>
+    <span class="spacer"></span>${practiceTry ? '<button class="btn sm" id="pShow">Show worked example</button>' : '<button class="btn sm" id="pTry">Clear and try yourself</button>'}
+    <button class="btn sm pri" id="pExit">Exit practice</button></div>` : '';
+  if(practice){ ($('pShow') || {}).onclick = () => startPractice(false); ($('pTry') || {}).onclick = () => startPractice(true); $('pExit').onclick = stopPractice; }
+}
+function practiceSheet(){
+  const L = (a, b) => `<tr><td>${a}</td><td class="num"><b>${b}</b></td></tr>`;
+  const rows = (rs, pre) => rs.map(r => L(`${pre} ${r.who}`, money(num(r.amt)))).join('');
+  const cnt = (o, name) => NOTES.filter(d => o[d]).map(d => L(`${name} x ${d}`, o[d] + ' pcs')).join('');
+  return `<div class="card" style="border-color:#FED7AA"><h2>Sample day slips: enter these figures</h2>
+    <div class="sheet" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <table><tbody>${rows(SAMPLE.fromRows, 'From teller')}${rows(SAMPLE.toRows, 'To teller')}</tbody></table>
+      <table><tbody>${cnt(SAMPLE.serv, 'Good notes')}${cnt(SAMPLE.unserv, 'Damaged notes')}</tbody></table>
+      <table><tbody>${rows(SAMPLE.tellers, 'Teller box')}${L('EUR received', '300.00')}${L('USD received', '9,000.00')}${L('ATM at EOD', money(4078500))}${L('CRM/CDM at EOD', money(8751800))}</tbody></table>
+    </div></div>`;
+}
+$('practiceBtn').onclick = () => practice ? stopPractice() : startPractice(false);
+
+/* ---------- quick tour ---------- */
+const TOUR = [
+  ['bbar', 'Balance bar', 'Always visible. Green means fine, red means fix it. Click a light to jump to that part of the form.'],
+  ['c-open', '1. Opening balance', 'Check the date. The B/F fills in from yesterday\'s saved C/F.'],
+  ['c-add', '2 and 3. Cash in and cash out', 'Enter today\'s movements. For tellers and machines, click a chip or type the teller number, then the amount. Enter adds the next line.'],
+  ['c-serv', '4 to 6. Physical count', 'Count the cash and enter the number of pieces. Values and totals are worked out for you.'],
+  ['c-gt', 'Balance check', 'The grand total must equal the C/F. If it does not, the difference shows here in red.'],
+  ['issuesBtn', 'Issues list', 'Every error and warning is listed here. Click one to go straight to the field.'],
+  ['pdfBtn', 'Download PDF', 'Available once all errors are fixed. Then sign the PDF in the e-sign portal.']
+];
+let tourI = -1;
+function showTour(i){
+  document.querySelectorAll('.tour-focus').forEach(x => x.classList.remove('tour-focus'));
+  $('tourPop')?.remove();
+  if(i < 0 || i >= TOUR.length){ tourI = -1; return; }
+  if(mode !== 'sheet') setMode('sheet');
+  tourI = i; const [id, title, text] = TOUR[i]; const el = $(id); if(!el) return showTour(i + 1);
+  el.scrollIntoView({block:'center'});
+  el.classList.add('tour-focus');
+  const r = el.getBoundingClientRect(), pop = document.createElement('div');
+  pop.className = 'tourpop'; pop.id = 'tourPop';
+  pop.innerHTML = `<b>${title}</b><p>${text}</p><div class="row"><span class="hint">${i + 1} of ${TOUR.length}</span><span class="spacer"></span>
+    <button class="btn sm ghost" data-t="end">Skip</button>${i ? '<button class="btn sm" data-t="prev">Back</button>' : ''}<button class="btn sm pri" data-t="next">${i === TOUR.length - 1 ? 'Done' : 'Next'}</button></div>`;
+  document.body.appendChild(pop);
+  const below = r.bottom + 12 + pop.offsetHeight < innerHeight;
+  pop.style.top = (below ? r.bottom + 12 : Math.max(12, r.top - pop.offsetHeight - 12)) + 'px';
+  pop.style.left = Math.min(innerWidth - 356, Math.max(16, r.left)) + 'px';
+  pop.onclick = e => { const a = e.target.dataset.t; if(a === 'next') showTour(i + 1); if(a === 'prev') showTour(i - 1); if(a === 'end') showTour(-1); };
+}
+$('tourBtn').onclick = () => showTour(0);
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && tourI >= 0) showTour(-1); });
+
+setMode(mode);
+if(!store.get('vault.toured', false)){ store.set('vault.toured', true); setTimeout(() => showTour(0), 600); }
+
 </script>
 </body>
 </html>
