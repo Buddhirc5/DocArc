@@ -16,21 +16,16 @@
   --field:#FAFAFB; --ok:#16A34A; --warn:#D97706; --bad:#DC2626;
   --radius:14px; --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 24px rgba(0,0,0,.05);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#111113; --card:#1A1A1D; --ink:#F2F2F3; --muted:#9B9BA3; --line:#2A2A2F;
-  --field:#141416; --brand-soft:#3A1416; --shadow:none;}}
-:root[data-theme="dark"]{--bg:#111113; --card:#1A1A1D; --ink:#F2F2F3; --muted:#9B9BA3; --line:#2A2A2F;
-  --field:#141416; --brand-soft:#3A1416; --shadow:none;}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,system-ui,sans-serif}
 header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line)}
-.bar{max-width:1240px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.bar{max-width:1480px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
 .logo{width:40px;height:40px;border-radius:9px;object-fit:cover}
 .brand b{display:block;font-size:15px}.brand small{color:var(--muted)}
 nav{margin-left:auto;display:flex;gap:4px;background:var(--field);border:1px solid var(--line);padding:4px;border-radius:12px}
 nav button{border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:9px;font:inherit;font-weight:600;cursor:pointer}
 nav button.on{background:var(--brand);color:#fff}
-main{max-width:1240px;margin:auto;padding:20px 16px 80px}
+main{max-width:1480px;margin:auto;padding:20px 24px 60px}
 .view{display:none}.view.on{display:block}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
 .card h2{font-size:15px;margin:0 0 14px;display:flex;align-items:center;gap:8px}
@@ -71,7 +66,17 @@ td input,td select{padding:7px 8px;border-radius:8px}
 .drop.over{border-color:var(--brand);background:var(--brand-soft)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;transition:.25s;z-index:99;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%)}
-.chk{width:auto}
+.chk{width:auto;accent-color:var(--brand)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.side{position:sticky;top:78px}
+.side .stat{margin-bottom:10px}
+.side .btn{width:100%;justify-content:center;margin-bottom:8px}
+.grid4{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr))}
+.kbd{display:inline-block;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;font-size:11px;background:var(--field)}
+.icon{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+#items tbody tr:hover{background:#FCFCFD}
+#items td.disp{white-space:nowrap;font-weight:600}
+@media (max-width:1100px){.layout{grid-template-columns:1fr}.side{position:static}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .mapgrid td input{min-width:120px}
 @media (max-width:700px){.brand small{display:none}nav button{padding:7px 9px}}
 </style>
@@ -90,13 +95,15 @@ td input,td select{padding:7px 8px;border-radius:8px}
 <main>
 <!-- ============ BRANCH ============ -->
 <section class="view on" id="v-branch">
+ <div class="layout">
+ <div>
   <div class="card">
     <h2><span class="num">1</span>Carton details</h2>
-    <div class="grid">
-      <div><label>PL #</label><input id="f_pl"></div>
-      <div><label>Carton number</label><input id="f_carton" placeholder="e.g. 016634771"></div>
-      <div><label>Client name</label><input id="f_client"></div>
+    <div class="grid4">
+      <div><label>Carton number</label><input id="f_carton" placeholder="e.g. 016634771" autofocus></div>
       <div><label>Department / Branch</label><select id="f_branch"></select></div>
+      <div><label>Client</label><input id="f_client" readonly tabindex="-1"></div>
+      <div><label>PL #</label><input id="f_pl"></div>
       <div><label>Packed by</label><input id="f_packedBy" list="staffList"></div>
       <div><label>Packed date</label><input id="f_packedDate" type="date"></div>
       <div><label>Data entry by</label><input id="f_entryBy" list="staffList"></div>
@@ -110,28 +117,14 @@ td input,td select{padding:7px 8px;border-radius:8px}
       <span class="hint" id="rowCount"></span></h2>
     <div class="tablewrap"><table id="items">
       <thead><tr><th>#</th><th>Document type</th><th>File name / description</th><th>From</th><th>To</th>
-        <th>Retention (yrs)</th><th>Hold</th><th>Disposal</th><th></th></tr></thead>
+        <th>Ret. (yrs)</th><th>Hold</th><th>Disposal</th><th></th></tr></thead>
       <tbody></tbody>
     </table></div>
     <div class="row" style="margin-top:12px">
-      <button class="btn" id="addRow">+ Add document</button>
-      <button class="btn ghost" id="add5">+ 5 rows</button>
+      <button class="btn" id="addRow">Add document</button>
+      <button class="btn ghost" id="add5">Add 5 rows</button>
       <span class="spacer"></span>
-      <span class="hint">Retention and disposal fill in from the document type. You can change them on any row.</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2><span class="num">3</span>Summary</h2>
-    <div class="summary">
-      <div class="stat"><small>Documents</small><b id="s_count">0</b></div>
-      <div class="stat"><small>Period covered</small><b id="s_period">–</b></div>
-      <div class="stat"><small>On hold</small><b id="s_hold">0</b></div>
-      <div class="stat accent"><small>Carton disposal date</small><b id="s_disposal">–</b></div>
-    </div>
-    <div class="grid" style="margin-top:12px">
-      <div><label>Override disposal date (optional)</label><input id="f_dispOverride" type="date"></div>
-      <div style="grid-column:span 2"><label>Remarks</label><input id="f_remarks"></div>
+      <span class="hint"><span class="kbd">Enter</span> next row &nbsp; <span class="kbd">Ctrl</span>+<span class="kbd">D</span> copy row above &nbsp; <span class="kbd">Ctrl</span>+<span class="kbd">S</span> save</span>
     </div>
   </div>
 
@@ -140,15 +133,31 @@ td input,td select{padding:7px 8px;border-radius:8px}
       <button class="btn sm" id="exportAll">Excel of all saved cartons</button></h2>
     <div class="tablewrap"><table id="saved"><thead><tr><th>PL #</th><th>Carton</th><th>Branch</th><th>Docs</th><th>Packed</th><th>Disposal</th><th></th></tr></thead><tbody></tbody></table></div>
   </div>
+ </div>
 
-  <div class="actions"><div class="card">
-    <button class="btn" id="newCarton">New carton</button>
-    <button class="btn" id="saveCarton">Save</button>
-    <span class="spacer"></span>
-    <button class="btn" id="dlExcel">Download Excel</button>
+ <aside class="side">
+  <div class="card">
+    <h2><span class="num">3</span>Summary</h2>
+    <div class="stat accent"><small>Carton disposal date</small><b id="s_disposal">–</b></div>
+    <div class="summary" style="grid-template-columns:1fr 1fr">
+      <div class="stat"><small>Documents</small><b id="s_count">0</b></div>
+      <div class="stat"><small>On hold</small><b id="s_hold">0</b></div>
+    </div>
+    <div class="stat"><small>Period covered</small><b id="s_period">–</b></div>
+    <div style="margin-bottom:10px"><label>Override disposal date (optional)</label><input id="f_dispOverride" type="date"></div>
+    <div><label>Remarks</label><input id="f_remarks"></div>
+  </div>
+  <div class="card">
     <button class="btn pri" id="dlPdf">Download PDF</button>
+    <button class="btn" id="dlExcel">Download Excel</button>
     <button class="btn" id="openDrive">Open OneDrive folder</button>
-  </div></div>
+    <div class="row" style="margin-top:4px">
+      <button class="btn" id="saveCarton" style="flex:1">Save</button>
+      <button class="btn" id="newCarton" style="flex:1">New carton</button>
+    </div>
+  </div>
+ </aside>
+ </div>
 </section>
 
 <!-- ============ ADMIN ============ -->
@@ -200,11 +209,9 @@ td input,td select{padding:7px 8px;border-radius:8px}
   <div class="card">
     <h2>General</h2>
     <div class="grid">
-      <div><label>Default client name</label><input id="s_client"></div>
-      <div><label>My branch (default)</label><select id="s_branch"></select></div>
+            <div><label>My branch (default)</label><select id="s_branch"></select></div>
       <div><label>PL # prefix</label><input id="s_prefix"></div>
       <div style="grid-column:1/-1"><label>OneDrive upload folder link</label><input id="s_drive" placeholder="https://…sharepoint.com/…"></div>
-      <div><label>Theme</label><select id="s_theme"><option value="">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
     </div>
   </div>
   <div class="card">
@@ -248,7 +255,7 @@ const DEFAULTS = {
     ['Sales / Target Files',6],['Other',6]
   ]
 };
-let S = Object.assign({}, DEFAULTS, store.get('settings', {}));
+let S = Object.assign({}, DEFAULTS, store.get('settings', {}), {client:'Pan Asia Bank'});
 const retFor = t => { const r = S.types.find(x => x[0] === t); return r ? r[1] : ''; };
 
 /* ---------- helpers ---------- */
@@ -266,7 +273,6 @@ function calcDisposal(toYM, years){
   return d.toISOString().slice(0,10);
 }
 function download(blob, name){ const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
-function applyTheme(){ if(S.theme) document.documentElement.dataset.theme = S.theme; else delete document.documentElement.dataset.theme; }
 
 /* ---------- tabs ---------- */
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
@@ -297,7 +303,7 @@ function loadCarton(c){
   fillSelect($('f_branch'), S.branches, c.branch || S.branch);
   $('f_pl').value = c.pl || newPL();
   $('f_carton').value = c.carton || '';
-  $('f_client').value = c.client || S.client;
+  $('f_client').value = 'Pan Asia Bank';
   $('f_packedBy').value = c.packedBy || ''; $('f_entryBy').value = c.entryBy || '';
   $('f_packedDate').value = c.packedDate || today(); $('f_entryDate').value = c.entryDate || today();
   $('f_dispOverride').value = c.dispOverride || ''; $('f_remarks').value = c.remarks || '';
@@ -316,14 +322,14 @@ function renderRows(){
   const typeNames = S.types.map(t => t[0]);
   tb.innerHTML = rows.map((r,i) => `<tr data-i="${i}">
     <td>${i+1}</td>
-    <td><select data-k="type" style="min-width:170px"><option value="">Select…</option>${typeNames.map(t => `<option${t===r.type?' selected':''}>${esc(t)}</option>`).join('')}${r.type && !typeNames.includes(r.type) ? `<option selected>${esc(r.type)}</option>`:''}</select></td>
-    <td><input data-k="desc" value="${esc(r.desc)}" placeholder="e.g. 'A' to 'L' 2020–2024" style="min-width:220px"></td>
-    <td><input data-k="from" type="month" value="${r.from}" style="min-width:140px"></td>
-    <td><input data-k="to" type="month" value="${r.to}" style="min-width:140px"></td>
-    <td><input data-k="ret" type="number" min="0" value="${r.ret}" style="width:80px"></td>
+    <td><select data-k="type" style="min-width:150px"><option value="">Select…</option>${typeNames.map(t => `<option${t===r.type?' selected':''}>${esc(t)}</option>`).join('')}${r.type && !typeNames.includes(r.type) ? `<option selected>${esc(r.type)}</option>`:''}</select></td>
+    <td><input data-k="desc" value="${esc(r.desc)}" placeholder="e.g. A to L, 2020–2024" style="min-width:160px"></td>
+    <td><input data-k="from" type="month" value="${r.from}" style="min-width:128px"></td>
+    <td><input data-k="to" type="month" value="${r.to}" style="min-width:128px"></td>
+    <td><input data-k="ret" type="number" min="0" value="${r.ret}" style="width:62px"></td>
     <td style="text-align:center"><input data-k="hold" type="checkbox" class="chk" ${r.hold?'checked':''}></td>
     <td class="disp">${r.hold ? '<span class="pill hold">Hold</span>' : (r.disp ? fmt(r.disp) : '<span class="hint">–</span>')}</td>
-    <td><button class="btn sm ghost" data-del title="Remove">✕</button></td></tr>`).join('');
+    <td><button class="btn sm ghost" data-del title="Remove"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></td></tr>`).join('');
   updateSummary();
 }
 
@@ -338,11 +344,27 @@ $('items').addEventListener('input', e => {
   updateSummary(); autosave();
 });
 $('items').addEventListener('click', e => {
-  if(!e.target.matches('[data-del]')) return;
+  if(!e.target.closest('[data-del]')) return;
   rows.splice(e.target.closest('tr').dataset.i, 1); if(!rows.length) rows.push(blankRow());
   renderRows(); autosave();
 });
-$('addRow').onclick = () => { rows.push(blankRow()); renderRows(); };
+function focusRow(i, k){ const el = $('items').tBodies[0].rows[i]?.querySelector(`[data-k=${k||'type'}]`); if(el) el.focus(); }
+$('items').addEventListener('keydown', e => {
+  const tr = e.target.closest('tr'); if(!tr) return; const i = +tr.dataset.i;
+  if(e.key === 'Enter' && !e.ctrlKey){
+    e.preventDefault();
+    if(i === rows.length - 1){ rows.push(blankRow()); renderRows(); }
+    focusRow(i + 1, e.target.dataset.k);
+  }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd'){
+    e.preventDefault(); if(i === 0) return;
+    rows[i] = Object.assign({}, rows[i-1]); renderRows(); autosave(); focusRow(i, 'desc');
+  }
+});
+document.addEventListener('keydown', e => {
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's' && $('v-branch').classList.contains('on')){ e.preventDefault(); saveCarton(); }
+});
+$('addRow').onclick = () => { rows.push(blankRow()); renderRows(); focusRow(rows.length - 1); };
 $('add5').onclick = () => { for(let i=0;i<5;i++) rows.push(blankRow()); renderRows(); };
 
 function cartonDisposal(){
@@ -576,28 +598,27 @@ $('exportMaster').onclick = () => {
 
 /* =========================== SETTINGS =========================== */
 function renderSettings(){
-  $('s_client').value = S.client; $('s_prefix').value = S.prefix; $('s_drive').value = S.drive; $('s_theme').value = S.theme;
+  $('s_prefix').value = S.prefix; $('s_drive').value = S.drive;
   fillSelect($('s_branch'), S.branches, S.branch);
   $('s_branches').value = S.branches.join('\n'); $('s_staff').value = S.staff.join('\n');
   $('staffList').innerHTML = S.staff.map(s => `<option value="${esc(s)}">`).join('');
-  $('mapTbl').tBodies[0].innerHTML = S.types.map(([t,y]) => `<tr><td><input value="${esc(t)}"></td><td><input type="number" min="0" value="${y}" style="width:100px"></td><td><button class="btn sm ghost" data-del>✕</button></td></tr>`).join('');
+  $('mapTbl').tBodies[0].innerHTML = S.types.map(([t,y]) => `<tr><td><input value="${esc(t)}"></td><td><input type="number" min="0" value="${y}" style="width:100px"></td><td><button class="btn sm ghost" data-del><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></td></tr>`).join('');
 }
-$('mapTbl').addEventListener('click', e => { if(e.target.matches('[data-del]')) e.target.closest('tr').remove(); });
-$('addType').onclick = () => $('mapTbl').tBodies[0].insertAdjacentHTML('beforeend', `<tr><td><input placeholder="New type"></td><td><input type="number" min="0" value="6" style="width:100px"></td><td><button class="btn sm ghost" data-del>✕</button></td></tr>`);
+$('mapTbl').addEventListener('click', e => { if(e.target.closest('[data-del]')) e.target.closest('tr').remove(); });
+$('addType').onclick = () => $('mapTbl').tBodies[0].insertAdjacentHTML('beforeend', `<tr><td><input placeholder="New type"></td><td><input type="number" min="0" value="6" style="width:100px"></td><td><button class="btn sm ghost" data-del><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></td></tr>`);
 const lines = v => v.split('\n').map(s => s.trim()).filter(Boolean);
 $('saveSettings').onclick = () => {
-  S = { client:$('s_client').value.trim(), branch:$('s_branch').value, prefix:$('s_prefix').value.trim() || 'PL',
-    drive:$('s_drive').value.trim(), theme:$('s_theme').value,
+  S = { client:'Pan Asia Bank', branch:$('s_branch').value, prefix:$('s_prefix').value.trim() || 'PL',
+    drive:$('s_drive').value.trim(),
     branches:lines($('s_branches').value), staff:lines($('s_staff').value),
     types:[...$('mapTbl').tBodies[0].rows].map(tr => [tr.cells[0].firstChild.value.trim(), Number(tr.cells[1].firstChild.value)]).filter(t => t[0]) };
-  store.set('settings', S); applyTheme(); renderSettings();
+  store.set('settings', S); renderSettings();
   const c = readCarton(); c.rows = rows; loadCarton(c); toast('Settings saved');
 };
-$('resetSettings').onclick = () => { if(confirm('Reset all settings to defaults?')){ S = Object.assign({}, DEFAULTS); store.set('settings', S); applyTheme(); renderSettings(); toast('Defaults restored'); } };
-$('s_theme').onchange = e => { S.theme = e.target.value; applyTheme(); };
+$('resetSettings').onclick = () => { if(confirm('Reset all settings to defaults?')){ S = Object.assign({}, DEFAULTS); store.set('settings', S); renderSettings(); toast('Defaults restored'); } };
 
 /* ---------- init ---------- */
-applyTheme(); renderSettings(); loadCarton(store.get('draft', null)); renderSaved();
+renderSettings(); loadCarton(store.get('draft', null)); renderSaved();
 </script>
 </body>
 </html>
