@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DocArc UI Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--r:#ED1C24;--rd:#C8141B;--rs:#FFF1F1;--ink:#1B1B1F;--mut:#73737B;--line:#ECECEF;--bg:#FAFAFA}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,system-ui,sans-serif}
+.top{background:var(--r);color:#fff}
+.top .in{max-width:1180px;margin:auto;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.lg{width:42px;height:42px;background:#fff;border-radius:10px;display:grid;place-items:center;color:var(--r);font-weight:800;font-size:11px;text-align:center;line-height:1}
+.top b{font-size:16px}.top small{opacity:.85;display:block}
+.tabs{margin-left:auto;display:flex;gap:6px}.tabs span{padding:7px 14px;border-radius:99px;font-weight:600;background:rgba(255,255,255,.15)}.tabs span.on{background:#fff;color:var(--r)}
+main{max-width:1180px;margin:auto;padding:22px 16px 60px}
+.note{background:#fff;border:1px dashed var(--r);color:var(--rd);border-radius:12px;padding:10px 14px;margin:28px 0 12px;font-weight:600}
+.steps{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.st{flex:1;min-width:180px;display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.st i{font-style:normal;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--line);color:var(--mut)}
+.st.on{border-color:var(--r);box-shadow:0 0 0 3px var(--rs)}.st.on i{background:var(--r);color:#fff}.st.ok i{background:var(--rs);color:var(--r)}
+.st small{display:block;color:var(--mut)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px}
+h3{margin:0 0 4px;font-size:18px}.sub{color:var(--mut);margin:0 0 18px}
+label{display:block;font-size:12px;font-weight:600;color:var(--mut);margin-bottom:6px}
+.boxes{display:flex;gap:6px;flex-wrap:wrap}.boxes span{width:44px;height:54px;border:1.5px solid var(--line);border-radius:10px;display:grid;place-items:center;font-size:22px;font-weight:700}
+.boxes span.f{border-color:var(--r);color:var(--r);background:var(--rs)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{padding:8px 14px;border:1.5px solid var(--line);border-radius:99px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--r);border-color:var(--r);color:#fff}
+.g2{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.inp{border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff;display:flex;justify-content:space-between}
+.inp em{color:var(--mut);font-style:normal}
+.lock{background:#F5F5F7;color:var(--mut)}
+.split{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}@media(max-width:860px){.split{grid-template-columns:1fr}}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{border:1.5px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;position:relative;transition:.15s}
+.tile:hover{border-color:var(--r);transform:translateY(-2px)}
+.tile .ic{width:34px;height:34px;border-radius:10px;background:var(--rs);color:var(--r);display:grid;place-items:center;font-size:17px;margin-bottom:8px}
+.tile b{display:block;font-size:13px}.tile small{color:var(--mut)}
+.tile .plus{position:absolute;right:10px;top:10px;color:var(--r);font-weight:800}
+.search{border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;color:var(--mut);margin-bottom:12px}
+.carton{background:linear-gradient(180deg,#fff, #fff);border:2px solid var(--r);border-radius:18px;padding:16px}
+.chead{display:flex;align-items:center;gap:10px;margin-bottom:12px}.chead b{font-size:15px}
+.meter{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}.meter div{height:100%;width:23%;background:var(--r)}
+.item{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.item .h{display:flex;align-items:center;gap:8px}.item .h b{flex:1}
+.n{width:22px;height:22px;border-radius:50%;background:var(--r);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.yr{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
+.yr span{border:1.5px solid var(--line);border-radius:10px;padding:5px 10px;font-weight:600}
+.yr .to{color:var(--mut);border:0;padding:0}
+.meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--mut)}
+.disp{background:var(--rs);color:var(--rd);padding:4px 10px;border-radius:99px;font-weight:700}
+.tog{display:inline-flex;align-items:center;gap:6px}.tog i{width:30px;height:18px;border-radius:99px;background:var(--line);position:relative}.tog i:after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+.desc{border:0;border-bottom:1.5px dashed var(--line);width:100%;padding:6px 0;margin-top:8px;color:var(--mut)}
+.big{background:var(--r);color:#fff;border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.big small{opacity:.85;display:block}.big b{font-size:22px}
+.btn{display:inline-flex;gap:8px;align-items:center;padding:12px 18px;border-radius:12px;font-weight:700;border:1.5px solid var(--line);background:#fff}
+.btn.p{background:var(--r);border-color:var(--r);color:#fff}
+.foot{display:flex;gap:10px;justify-content:space-between;margin-top:16px;flex-wrap:wrap}
+.pdf{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.pdf .bar{background:var(--r);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;font-weight:700}
+.pdf table{width:100%;border-collapse:collapse;font-size:11px}.pdf td,.pdf th{border:1px solid var(--line);padding:5px 7px;text-align:left}.pdf th{background:#F7F7F8;color:var(--mut)}
+.done{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.act{border:1.5px solid var(--line);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center}
+.act .ic{width:40px;height:40px;border-radius:12px;background:var(--rs);color:var(--r);display:grid;place-items:center;font-size:18px;font-weight:800}
+.act small{display:block;color:var(--mut)}.act.p{background:var(--r);border-color:var(--r);color:#fff}.act.p .ic{background:#fff}.act.p small{color:#ffe0e1}
+</style></head><body>
+<div class="top"><div class="in"><div class="lg">PAN<br>ASIA</div><div><b>DocArc</b><small>Pan Asia Bank · Records archival</small></div>
+<div class="tabs"><span class="on">New carton</span><span>My cartons</span><span>Admin</span></div></div></div>
+<main>
+<div class="steps">
+  <div class="st ok"><i>✓</i><div><b>Carton</b><small>Box & people</small></div></div>
+  <div class="st on"><i>2</i><div><b>Documents</b><small>Tap to add</small></div></div>
+  <div class="st"><i>3</i><div><b>Review & send</b><small>PDF + Excel</small></div></div>
+</div>
+
+<div class="note">STEP 1: Carton. A short screen with large inputs.</div>
+<div class="card">
+  <h3>Which box are you packing?</h3><p class="sub">Client is fixed as Pan Asia Bank. Dates fill in automatically.</p>
+  <label>Carton number</label>
+  <div class="boxes"><span class="f">0</span><span class="f">1</span><span class="f">6</span><span class="f">6</span><span class="f">3</span><span class="f">4</span><span class="f">7</span><span class="f">7</span><span>1</span><span></span></div>
+  <div style="height:18px"></div>
+  <label>Branch</label>
+  <div class="chips"><span class="chip on">Nugegoda</span><span class="chip">Kollupitiya</span><span class="chip">Wellawatte</span><span class="chip">Kandy</span><span class="chip">+ more</span></div>
+  <div style="height:18px"></div>
+  <div class="g2">
+    <div><label>Client</label><div class="inp lock">Pan Asia Bank <em>🔒</em></div></div>
+    <div><label>Packed by</label><div class="inp">Amalsha <em>Today · 20/10/2026</em></div></div>
+    <div><label>Data entry by</label><div class="inp">Akila <em>Today · 20/10/2026</em></div></div>
+  </div>
+</div>
+
+<div class="note">STEP 2: Documents. Tap a tile to add it to the box. Retention and disposal fill in by themselves.</div>
+<div class="split">
+  <div class="card">
+    <h3>Add documents</h3><p class="sub">Tap a type. It drops into the carton.</p>
+    <div class="search">🔍 Search document type…</div>
+    <div class="tiles">
+      <div class="tile"><span class="plus">+</span><div class="ic">💰</div><b>Pawning Reports</b><small>6 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">🏦</div><b>Loan Documents</b><small>10 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">🛡</div><b>Guarantee Facilities</b><small>10 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">✉️</div><b>Branch Correspondence</b><small>6 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">📄</div><b>RD Letters</b><small>6 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">🔑</div><b>Key Transfer Forms</b><small>6 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">🪙</div><b>Gold Specimen</b><small>6 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">📊</div><b>Excess Reports</b><small>6 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">👤</div><b>Customer Documents</b><small>10 yrs</small></div>
+      <div class="tile"><span class="plus">+</span><div class="ic">＋</div><b>Other…</b><small>Type your own</small></div>
+    </div>
+  </div>
+  <div class="carton">
+    <div class="chead"><b>📦 Carton 016634771</b><div class="meter"><div></div></div><small>5 / 22</small></div>
+    <div class="item"><div class="h"><span class="n">1</span><b>Pawning Reports</b><span>✕</span></div>
+      <div class="desc">Sep 2024 to Jan 2025</div>
+      <div class="yr"><span>Sep 2024</span><span class="to">→</span><span>Jan 2025</span><span class="chip">This year</span><span class="chip">Last year</span></div>
+      <div class="meta"><span class="tog"><i></i> Hold</span><span>6 yrs → <span class="disp">Destroy Feb 2031</span></span></div></div>
+    <div class="item"><div class="h"><span class="n">2</span><b>Guarantee Facilities</b><span>✕</span></div>
+      <div class="desc">Monali Traders</div>
+      <div class="yr"><span>2024</span><span class="to">→</span><span>2024</span></div>
+      <div class="meta"><span class="tog"><i></i> Hold</span><span>10 yrs → <span class="disp">Destroy Jan 2035</span></span></div></div>
+    <div class="item" style="opacity:.6"><div class="h"><span class="n">3</span><b>RD Letters</b><span>✕</span></div>
+      <div class="meta"><span>2023 → 2025 · 6 yrs</span><span class="disp">Destroy Jan 2032</span></div></div>
+    <div class="big"><div><small>Box disposal date</small><b>01 Jan 2035</b></div><div style="text-align:right"><small>Period</small><b>2023–2025</b></div></div>
+  </div>
+</div>
+
+<div class="note">STEP 3: Review & send. Preview the PDF, then work through the four actions in order.</div>
+<div class="split">
+  <div class="pdf"><div class="bar"><span>PAN ASIA BANK · PACKING LIST</span><span>PL-NUG-20261020-01</span></div>
+    <table><tr><th>#</th><th>Document type</th><th>Description</th><th>Period</th><th>Ret.</th><th>Disposal</th></tr>
+    <tr><td>1</td><td>Pawning Reports</td><td>Sep 2024 – Jan 2025</td><td>2024–25</td><td>6</td><td>01/02/2031</td></tr>
+    <tr><td>2</td><td>Guarantee Facilities</td><td>Monali Traders</td><td>2024</td><td>10</td><td>01/01/2035</td></tr>
+    <tr><td>3</td><td>RD Letters</td><td></td><td>2023–25</td><td>6</td><td>01/01/2032</td></tr>
+    <tr><td>4</td><td></td><td></td><td></td><td></td><td></td></tr></table></div>
+  <div class="card" style="margin:0">
+    <h3>All set 🎉</h3><p class="sub">Do these in order:</p>
+    <div class="done">
+      <div class="act p"><div class="ic">1</div><div><b>Download PDF</b><small>Sign in the e-sign portal</small></div></div>
+      <div class="act"><div class="ic">2</div><div><b>Download Excel</b><small>Data for Admin</small></div></div>
+      <div class="act"><div class="ic">3</div><div><b>Upload to OneDrive</b><small>Opens the shared folder</small></div></div>
+      <div class="act"><div class="ic">4</div><div><b>Pack next carton</b><small>Keeps branch & names</small></div></div>
+    </div>
+  </div>
+</div>
+<div class="foot"><span class="btn">← Back</span><span class="btn p">Next →</span></div>
+</main></body></html>
